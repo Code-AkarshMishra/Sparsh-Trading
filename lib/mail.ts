@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import type SMTPTransport from "nodemailer/lib/smtp-transport";
 
 export type EmailResult = {
   success: boolean;
@@ -6,27 +7,47 @@ export type EmailResult = {
   message?: string;
 };
 
-export async function sendOwnerEnquiryEmail(subject: string, html: string, rawData?: Record<string, any>): Promise<EmailResult> {
+export async function sendOwnerEnquiryEmail(
+  subject: string,
+  html: string,
+  rawData?: Record<string, any>
+): Promise<EmailResult> {
   const targetEmail = process.env.OWNER_EMAIL || "mail.sparshtrading@gmail.com";
 
-  // 1. Direct SMTP (if configured with Gmail or custom mail server)
-  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+  // 1. Direct Gmail / SMTP
+  if (process.env.SMTP_USER && process.env.SMTP_PASS) {
     try {
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT || 587),
-        secure: Number(process.env.SMTP_PORT) === 465,
-        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-      });
+      const isGmail = process.env.SMTP_HOST?.includes("gmail") || process.env.SMTP_USER.includes("@gmail.com");
+      
+      const transportConfig: SMTPTransport.Options = isGmail
+        ? {
+            service: "gmail",
+            auth: {
+              user: process.env.SMTP_USER,
+              pass: process.env.SMTP_PASS.replace(/\s+/g, "")
+            }
+          }
+        : {
+            host: process.env.SMTP_HOST,
+            port: Number(process.env.SMTP_PORT || 465),
+            secure: Number(process.env.SMTP_PORT) === 465 || !process.env.SMTP_PORT,
+            auth: {
+              user: process.env.SMTP_USER,
+              pass: process.env.SMTP_PASS.replace(/\s+/g, "")
+            }
+          };
+
+      const transporter = nodemailer.createTransport(transportConfig);
+
       await transporter.sendMail({
         to: targetEmail,
-        from: process.env.SMTP_FROM || process.env.SMTP_USER,
+        from: process.env.SMTP_FROM || `"Sparsh Trading" <${process.env.SMTP_USER}>`,
         subject,
         html
       });
       return { success: true, provider: "smtp" };
     } catch (err: any) {
-      console.warn("SMTP email attempt failed:", err.message);
+      console.warn("Direct SMTP attempt failed:", err.message);
     }
   }
 
@@ -34,7 +55,7 @@ export async function sendOwnerEnquiryEmail(subject: string, html: string, rawDa
   try {
     const endpoint = process.env.FREE_FORM_ENDPOINT || `https://formsubmit.co/ajax/${encodeURIComponent(targetEmail)}`;
     const plainMessage = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-    
+
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },

@@ -97,7 +97,15 @@ export default function Home() {
                 className="metric card clickable"
                 key={metric.label}
                 aria-label={`${metric.value} ${metric.label} - click to view`}
-                style={{ borderLeft: "4px solid var(--red-2)" }}
+                style={{
+                  border: "2px solid var(--border-strong)",
+                  borderLeft: "5px solid var(--red-2)",
+                  borderRadius: 12,
+                  padding: "24px 20px",
+                  background: "var(--surface)",
+                  display: "block",
+                  boxShadow: "var(--card-shadow)"
+                }}
               >
                 <strong className="display" style={{ color: "var(--red-2)", fontSize: "2.8rem" }}>{metric.value}</strong>
                 <h3 style={{ fontSize: "1.05rem", marginTop: 4 }}>{metric.label}</h3>
@@ -130,7 +138,7 @@ export default function Home() {
                 className="service-card card clickable"
                 key={s.slug}
                 aria-label={`View details for ${s.title}`}
-                style={{ position: "relative" }}
+                style={{ position: "relative", border: "2px solid var(--border-strong)", borderRadius: 12 }}
               >
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -198,6 +206,15 @@ export default function Home() {
                   className="card process-step clickable"
                   key={item.title}
                   aria-label={`Learn more about ${item.title}`}
+                  style={{
+                    border: "2px solid var(--border-strong)",
+                    borderTop: "4px solid var(--red-2)",
+                    borderRadius: 12,
+                    padding: "24px 20px",
+                    background: "var(--surface)",
+                    display: "block",
+                    boxShadow: "var(--card-shadow)"
+                  }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                     <span className="step-number" style={{ color: "var(--red-2)", fontWeight: 800 }}>0{i + 1}</span>
@@ -229,14 +246,25 @@ export default function Home() {
                 className="card project-teaser-card clickable"
                 key={item.title}
                 aria-label={`View project details for ${item.title}`}
-                style={{ borderTop: "3px solid var(--red-2)" }}
+                style={{
+                  border: "2px solid var(--border-strong)",
+                  borderTop: "4px solid var(--red-2)",
+                  borderRadius: 12,
+                  padding: "26px 22px",
+                  background: "var(--surface)",
+                  boxShadow: "var(--card-shadow)",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  minHeight: 220
+                }}
               >
                 <div>
-                  <span className="eyebrow" style={{ color: "var(--red-2)" }}>{item.category}</span>
-                  <h3 style={{ fontSize: "1.35rem" }}>{item.title}</h3>
-                  <p className="muted" style={{ fontSize: "0.92rem" }}>{item.desc}</p>
+                  <span className="eyebrow" style={{ color: "var(--red-2)", fontSize: "0.8rem", letterSpacing: "0.08em" }}>{item.category}</span>
+                  <h3 style={{ fontSize: "1.35rem", margin: "8px 0 10px" }}>{item.title}</h3>
+                  <p className="muted" style={{ fontSize: "0.92rem", lineHeight: 1.55, margin: 0 }}>{item.desc}</p>
                 </div>
-                <span className="text-link" style={{ marginTop: 18, color: "var(--red-2)", fontWeight: 700 }}>
+                <span className="text-link" style={{ marginTop: 20, color: "var(--red-2)", fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 6 }}>
                   View projects →
                 </span>
               </Link>
@@ -244,6 +272,7 @@ export default function Home() {
           </MobileSwipeableContainer>
         </div>
       </section>
+
 
 
       {/* Leadership / Partners Section */}

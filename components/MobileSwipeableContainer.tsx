@@ -126,7 +126,7 @@ export function MobileSwipeableContainer({
                 maxWidth: "100%",
                 flexShrink: 0,
                 boxSizing: "border-box",
-                padding: "0"
+                padding: "4px 4px"
               }}
             >
               {child}
@@ -141,8 +141,8 @@ export function MobileSwipeableContainer({
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              marginTop: 12,
-              padding: "0 2px"
+              marginTop: 18,
+              padding: "0 6px"
             }}
           >
             <button
@@ -152,9 +152,9 @@ export function MobileSwipeableContainer({
               className="btn"
               style={{
                 padding: "6px 14px",
-                minHeight: 34,
+                minHeight: 36,
                 fontSize: "0.95rem",
-                background: "var(--surface)",
+                background: "var(--surface-2)",
                 color: "var(--red-2)",
                 borderColor: "var(--red-2)",
                 fontWeight: 900
@@ -162,6 +162,7 @@ export function MobileSwipeableContainer({
             >
               ←
             </button>
+
 
             <div style={{ display: "flex", gap: 5 }}>
               {children.map((_, dotIdx) => (

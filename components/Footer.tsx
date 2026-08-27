@@ -88,12 +88,27 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="wrap footer-bottom" style={{ borderTop: "1px solid var(--border)", paddingTop: 18, marginTop: 24, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, fontSize: "0.85rem" }}>
+      <div className="wrap footer-bottom" style={{ borderTop: "1px solid var(--border)", paddingTop: 18, marginTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, fontSize: "0.85rem" }}>
         <span>© {new Date().getFullYear()} {business.name} • GSTIN: <strong>09ELTPM0163A1Z3</strong> • <strong>sparshtrading.shop</strong></span>
-        <span style={{ color: "var(--red-2)", fontWeight: 700 }}>Serving {business.serviceArea}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+          <span style={{ color: "var(--red-2)", fontWeight: 700 }}>Serving {business.serviceArea}</span>
+          <span style={{ color: "var(--border)" }}>•</span>
+          <span style={{ color: "var(--muted)" }}>
+            Built &amp; Deployed by{" "}
+            <a
+              href="https://linktr.ee/akarshmishra"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#ffffff", fontWeight: 700, textDecoration: "underline", textUnderlineOffset: "3px" }}
+            >
+              Akarsh Mishra ↗
+            </a>
+          </span>
+        </div>
       </div>
     </footer>
   );
+
 
 
 }

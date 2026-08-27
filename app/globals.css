@@ -319,7 +319,21 @@ html.dark-mode .muted {
   display: none;
 }
 
+.mobile-only-flowchart {
+  display: none !important;
+}
+
+.desktop-only-flowchart {
+  display: grid !important;
+}
+
 @media (max-width: 768px) {
+  .mobile-only-flowchart {
+    display: block !important;
+  }
+  .desktop-only-flowchart {
+    display: none !important;
+  }
   .desktop-grid-view {
     display: none !important;
   }
@@ -350,6 +364,7 @@ html.dark-mode .muted {
     margin: 0 !important;
   }
 }
+
 
 
 

@@ -4,14 +4,14 @@ import React, { useState, useEffect, useRef, ReactNode } from "react";
 
 interface MobileSwipeableContainerProps {
   children: ReactNode[];
-  autoSlideInterval?: number; // ms, default 3000ms
+  autoSlideInterval?: number;
   className?: string;
   gridClassName?: string;
 }
 
 export function MobileSwipeableContainer({
   children,
-  autoSlideInterval = 3000,
+  autoSlideInterval = 3200,
   className = "",
   gridClassName = "cards"
 }: MobileSwipeableContainerProps) {
@@ -22,7 +22,7 @@ export function MobileSwipeableContainer({
 
   const total = children.length;
 
-  // Auto-advance on mobile
+  // Auto-advance
   useEffect(() => {
     if (total <= 1) return;
 
@@ -63,7 +63,7 @@ export function MobileSwipeableContainer({
     resumeAutoPlay();
   };
 
-  // Touch Swipe Handlers
+  // Touch Swipe
   const handleTouchStart = (e: React.TouchEvent) => {
     pauseAutoPlay();
     setTouchStart(e.targetTouches[0].clientX);
@@ -80,12 +80,9 @@ export function MobileSwipeableContainer({
       return;
     }
     const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > 40;
-    const isRightSwipe = distance < -40;
-
-    if (isLeftSwipe) {
+    if (distance > 40) {
       setCurrentIndex((prev) => (prev + 1) % total);
-    } else if (isRightSwipe) {
+    } else if (distance < -40) {
       setCurrentIndex((prev) => (prev - 1 + total) % total);
     }
     setTouchStart(null);
@@ -94,45 +91,42 @@ export function MobileSwipeableContainer({
   };
 
   return (
-    <div className={`responsive-swipe-root ${className}`}>
-      {/* Desktop Grid (Hidden on Mobile via CSS) */}
+    <div className={`responsive-swipe-root ${className}`} style={{ width: "100%", position: "relative" }}>
+      {/* Desktop Grid */}
       <div className={`desktop-grid-view ${gridClassName}`}>
         {children}
       </div>
 
-      {/* Mobile Swipe Carousel (Hidden on Desktop via CSS) */}
+      {/* Mobile Single Card Carousel */}
       <div
         className="mobile-swipe-view"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         style={{
-          position: "relative",
           width: "100%",
-          overflow: "hidden",
-          padding: "4px 0 12px"
+          position: "relative",
+          overflow: "hidden"
         }}
       >
         <div
-          className="mobile-swipe-track"
           style={{
             display: "flex",
+            width: "100%",
             transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-            transform: `translateX(-${currentIndex * 100}%)`,
-            width: "100%"
+            transform: `translateX(-${currentIndex * 100}%)`
           }}
         >
           {children.map((child, idx) => (
             <div
               key={idx}
-              className="mobile-swipe-slide"
               style={{
                 width: "100%",
                 minWidth: "100%",
                 maxWidth: "100%",
                 flexShrink: 0,
                 boxSizing: "border-box",
-                padding: "2px 2px"
+                padding: "0"
               }}
             >
               {child}
@@ -140,27 +134,26 @@ export function MobileSwipeableContainer({
           ))}
         </div>
 
-        {/* Swipe Navigation Buttons & Indicators */}
+        {/* Navigation Arrows & Indicator Dots */}
         {total > 1 && (
           <div
-            className="mobile-swipe-controls"
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              marginTop: 14,
-              padding: "0 4px"
+              marginTop: 12,
+              padding: "0 2px"
             }}
           >
             <button
               type="button"
               onClick={handlePrev}
-              aria-label="Previous slide"
+              aria-label="Previous card"
               className="btn"
               style={{
                 padding: "6px 14px",
-                minHeight: 36,
-                fontSize: "1rem",
+                minHeight: 34,
+                fontSize: "0.95rem",
                 background: "var(--surface)",
                 color: "var(--red-2)",
                 borderColor: "var(--red-2)",
@@ -170,8 +163,7 @@ export function MobileSwipeableContainer({
               ←
             </button>
 
-            {/* Pagination Dots */}
-            <div style={{ display: "flex", gap: 6 }}>
+            <div style={{ display: "flex", gap: 5 }}>
               {children.map((_, dotIdx) => (
                 <button
                   key={dotIdx}
@@ -181,14 +173,14 @@ export function MobileSwipeableContainer({
                     setCurrentIndex(dotIdx);
                     resumeAutoPlay();
                   }}
-                  aria-label={`Go to slide ${dotIdx + 1}`}
+                  aria-label={`Go to item ${dotIdx + 1}`}
                   style={{
-                    width: currentIndex === dotIdx ? 24 : 8,
-                    height: 8,
-                    borderRadius: 4,
+                    width: currentIndex === dotIdx ? 20 : 6,
+                    height: 6,
+                    borderRadius: 3,
                     border: "none",
                     background: currentIndex === dotIdx ? "var(--red-2)" : "var(--border)",
-                    transition: "all 0.3s ease",
+                    transition: "all 0.25s ease",
                     cursor: "pointer",
                     padding: 0
                   }}
@@ -199,12 +191,12 @@ export function MobileSwipeableContainer({
             <button
               type="button"
               onClick={handleNext}
-              aria-label="Next slide"
+              aria-label="Next card"
               className="btn"
               style={{
                 padding: "6px 14px",
-                minHeight: 36,
-                fontSize: "1rem",
+                minHeight: 34,
+                fontSize: "0.95rem",
                 background: "var(--surface)",
                 color: "var(--red-2)",
                 borderColor: "var(--red-2)",

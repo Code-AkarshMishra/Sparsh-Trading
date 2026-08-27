@@ -3,8 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BrandImage } from "@/components/BrandImage";
-import { MobileSwipeableContainer } from "@/components/MobileSwipeableContainer";
-
 
 const steps = [
   {
@@ -59,11 +57,77 @@ const steps = [
 
 export function HowWeWork() {
   const [active, setActive] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto-advance through stages
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
+      setActive((prev) => (prev + 1) % steps.length);
+    }, 3200);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [active]);
+
+  const pauseTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  const resumeTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setActive((prev) => (prev + 1) % steps.length);
+    }, 3200);
+  };
+
+  const handlePrev = () => {
+    pauseTimer();
+    setActive((prev) => (prev - 1 + steps.length) % steps.length);
+    resumeTimer();
+  };
+
+  const handleNext = () => {
+    pauseTimer();
+    setActive((prev) => (prev + 1) % steps.length);
+    resumeTimer();
+  };
+
+  // Touch Swipe on mobile card
+  const handleTouchStart = (e: React.TouchEvent) => {
+    pauseTimer();
+    setTouchStart(e.targetTouches[0].clientX);
+    setTouchEnd(null);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) {
+      resumeTimer();
+      return;
+    }
+    const diff = touchStart - touchEnd;
+    if (diff > 40) {
+      handleNext();
+    } else if (diff < -40) {
+      handlePrev();
+    }
+    setTouchStart(null);
+    setTouchEnd(null);
+    resumeTimer();
+  };
+
+  const activeStep = steps[active];
 
   return (
     <section className="section grid-bg workflow-section" id="how-we-work" aria-label="How We Work Process Flowchart">
       <div className="wrap">
-        <div style={{ textAlign: "center", marginBottom: 44 }}>
+        <div style={{ textAlign: "center", marginBottom: 36 }}>
           <span className="eyebrow" style={{ color: "var(--red-2)", fontWeight: 700 }}>
             Proven Execution Flowchart
           </span>
@@ -75,8 +139,8 @@ export function HowWeWork() {
           </p>
         </div>
 
-        {/* Interactive Flowchart Progress Bar */}
-        <div className="flowchart-stepper" style={{ marginBottom: 36, overflowX: "auto", paddingBottom: 10 }}>
+        {/* Interactive Flowchart Progress Stepper Bar (Synced Real-time) */}
+        <div className="flowchart-stepper" style={{ marginBottom: 32, overflowX: "auto", paddingBottom: 10 }}>
           <div style={{ display: "flex", alignItems: "center", minWidth: 680, justifyContent: "space-between", position: "relative" }}>
             <div
               style={{
@@ -97,7 +161,7 @@ export function HowWeWork() {
                 top: 20,
                 height: 3,
                 background: "linear-gradient(90deg, #b82117, #ff3333)",
-                boxShadow: "0 0 12px rgba(255, 51, 51, 0.6)",
+                boxShadow: "0 0 14px rgba(255, 51, 51, 0.7)",
                 transition: "width 0.35s ease",
                 zIndex: 1
               }}
@@ -107,7 +171,11 @@ export function HowWeWork() {
               <button
                 key={s.step}
                 type="button"
-                onClick={() => setActive(index)}
+                onClick={() => {
+                  pauseTimer();
+                  setActive(index);
+                  resumeTimer();
+                }}
                 style={{
                   position: "relative",
                   zIndex: 2,
@@ -123,8 +191,8 @@ export function HowWeWork() {
               >
                 <div
                   style={{
-                    width: 38,
-                    height: 38,
+                    width: 40,
+                    height: 40,
                     borderRadius: "50%",
                     display: "flex",
                     alignItems: "center",
@@ -140,7 +208,7 @@ export function HowWeWork() {
                         : "var(--surface)",
                     color: index <= active ? "#ffffff" : "var(--muted)",
                     border: `2px solid ${index <= active ? "var(--red-2)" : "var(--border)"}`,
-                    boxShadow: index === active ? "0 0 16px rgba(220, 38, 38, 0.7)" : "none",
+                    boxShadow: index === active ? "0 0 16px rgba(220, 38, 38, 0.8)" : "none",
                     transform: index === active ? "scale(1.15)" : "scale(1)"
                   }}
                 >
@@ -164,8 +232,111 @@ export function HowWeWork() {
           </div>
         </div>
 
-        {/* Flowchart Grid with Arrows & Mobile Touch-Swipe */}
-        <MobileSwipeableContainer autoSlideInterval={2600} gridClassName="flowchart-grid" className="mobile-flowchart-swipe">
+        {/* Mobile View: Dedicated Synced Active Step Card */}
+        <div
+          className="mobile-only-flowchart"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          style={{ width: "100%", margin: "0 auto 20px" }}
+        >
+          <div
+            className="card active-node"
+            style={{
+              padding: "26px 20px",
+              border: "2px solid var(--red-2)",
+              background: "var(--surface-2)",
+              boxShadow: "0 8px 30px rgba(220, 38, 38, 0.25)",
+              borderRadius: 12
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 6,
+                    background: "var(--red-2)",
+                    color: "#ffffff",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: 900,
+                    fontSize: "0.9rem"
+                  }}
+                >
+                  {activeStep.step}
+                </span>
+                <span
+                  className="eyebrow"
+                  style={{
+                    color: "var(--red-2)",
+                    fontSize: "0.78rem",
+                    letterSpacing: "0.08em",
+                    margin: 0
+                  }}
+                >
+                  {activeStep.tag}
+                </span>
+              </div>
+              <span style={{ fontSize: "0.85rem", color: "var(--muted)", fontWeight: 700 }}>
+                {active + 1} of {steps.length}
+              </span>
+            </div>
+
+            <h3 style={{ fontSize: "1.35rem", margin: "0 0 10px", color: "var(--strong)", fontWeight: 800 }}>
+              {activeStep.title}
+            </h3>
+            <p style={{ fontSize: "0.96rem", lineHeight: 1.6, color: "var(--text)", margin: "0 0 18px" }}>
+              {activeStep.desc}
+            </p>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 14, borderTop: "1px dashed var(--border)" }}>
+              <button
+                type="button"
+                onClick={handlePrev}
+                className="btn"
+                style={{ padding: "6px 16px", minHeight: 36, fontSize: "0.9rem", color: "var(--red-2)", borderColor: "var(--red-2)" }}
+              >
+                ← Prev
+              </button>
+
+              <div style={{ display: "flex", gap: 5 }}>
+                {steps.map((_, dotIdx) => (
+                  <span
+                    key={dotIdx}
+                    onClick={() => {
+                      pauseTimer();
+                      setActive(dotIdx);
+                      resumeTimer();
+                    }}
+                    style={{
+                      width: active === dotIdx ? 18 : 6,
+                      height: 6,
+                      borderRadius: 3,
+                      background: active === dotIdx ? "var(--red-2)" : "var(--border)",
+                      transition: "all 0.25s ease",
+                      cursor: "pointer"
+                    }}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleNext}
+                className="btn primary"
+                style={{ padding: "6px 16px", minHeight: 36, fontSize: "0.9rem" }}
+              >
+                Next →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop View: Full 8-Step Grid with Connected Status */}
+        <div className="desktop-only-flowchart flowchart-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 18 }}>
           {steps.map((item, index) => {
             const isActive = index === active;
             const isCompleted = index < active;
@@ -174,14 +345,22 @@ export function HowWeWork() {
               <div
                 key={item.step}
                 className={`card flowchart-node ${isActive ? "active-node" : ""}`}
-                onClick={() => setActive(index)}
+                onClick={() => {
+                  pauseTimer();
+                  setActive(index);
+                  resumeTimer();
+                }}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") setActive(index);
+                  if (e.key === "Enter" || e.key === " ") {
+                    pauseTimer();
+                    setActive(index);
+                    resumeTimer();
+                  }
                 }}
                 style={{
-                  padding: "24px 20px",
+                  padding: "22px 18px",
                   cursor: "pointer",
                   position: "relative",
                   border: isActive ? "2px solid var(--red-2)" : "1.5px solid var(--border)",
@@ -194,12 +373,12 @@ export function HowWeWork() {
                 }}
               >
                 <div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <span
                         style={{
-                          width: 28,
-                          height: 28,
+                          width: 26,
+                          height: 26,
                           borderRadius: 6,
                           background: isActive ? "var(--red-2)" : "rgba(217, 45, 32, 0.12)",
                           color: isActive ? "#ffffff" : "var(--red-2)",
@@ -207,7 +386,7 @@ export function HowWeWork() {
                           alignItems: "center",
                           justifyContent: "center",
                           fontWeight: 800,
-                          fontSize: "0.82rem"
+                          fontSize: "0.8rem"
                         }}
                       >
                         {item.step}
@@ -216,7 +395,7 @@ export function HowWeWork() {
                         className="eyebrow"
                         style={{
                           color: "var(--red-2)",
-                          fontSize: "0.72rem",
+                          fontSize: "0.7rem",
                           letterSpacing: "0.08em",
                           margin: 0
                         }}
@@ -229,7 +408,7 @@ export function HowWeWork() {
                       style={{
                         color: "var(--red-2)",
                         fontWeight: 900,
-                        fontSize: "1.1rem",
+                        fontSize: "1.05rem",
                         opacity: index < steps.length - 1 ? 1 : 0.4
                       }}
                     >
@@ -237,15 +416,15 @@ export function HowWeWork() {
                     </span>
                   </div>
 
-                  <h3 style={{ fontSize: "1.25rem", margin: "0 0 8px", color: "var(--strong)", fontWeight: 800 }}>
+                  <h3 style={{ fontSize: "1.2rem", margin: "0 0 8px", color: "var(--strong)", fontWeight: 800 }}>
                     {item.title}
                   </h3>
-                  <p style={{ fontSize: "0.92rem", lineHeight: 1.5, color: "var(--muted)", margin: 0 }}>
+                  <p style={{ fontSize: "0.9rem", lineHeight: 1.5, color: "var(--muted)", margin: 0 }}>
                     {item.desc}
                   </p>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 18, paddingTop: 12, borderTop: "1px dashed var(--border)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 16, paddingTop: 10, borderTop: "1px dashed var(--border)" }}>
                   <div
                     style={{
                       width: 8,
@@ -255,20 +434,18 @@ export function HowWeWork() {
                       boxShadow: isActive ? "0 0 8px #ff3333" : "none"
                     }}
                   />
-                  <span style={{ fontSize: "0.78rem", color: isActive ? "var(--red-2)" : "var(--muted)", fontWeight: 600 }}>
+                  <span style={{ fontSize: "0.76rem", color: isActive ? "var(--red-2)" : "var(--muted)", fontWeight: 600 }}>
                     {isActive ? "Active Stage Selected" : isCompleted ? "Stage Completed" : "Upcoming Phase"}
                   </span>
                 </div>
               </div>
             );
           })}
-        </MobileSwipeableContainer>
+        </div>
 
-
-        <div style={{ textAlign: "center", marginTop: 44 }}>
+        <div style={{ textAlign: "center", marginTop: 40 }}>
           <Link className="btn primary" href="/contact" style={{ padding: "14px 32px", fontSize: "1.05rem" }}>
             Start Step 01: Request Project Estimate →
-
           </Link>
         </div>
       </div>

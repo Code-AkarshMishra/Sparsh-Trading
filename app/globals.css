@@ -403,6 +403,28 @@ html.dark-mode .dev-credit-link:hover {
   }
 }
 
+.admin-mobile-topbar {
+  display: none !important;
+}
+
+.admin-desktop-sidebar {
+  display: flex !important;
+}
+
+@media (max-width: 860px) {
+  .admin-mobile-topbar {
+    display: block !important;
+  }
+  .admin-desktop-sidebar {
+    display: none !important;
+  }
+  .admin-body-split {
+    flex-direction: column !important;
+  }
+}
+
+
+
 
 
 

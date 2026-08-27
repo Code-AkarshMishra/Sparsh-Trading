@@ -37,18 +37,21 @@ export async function sendOwnerEnquiryEmail(
 
       const transporter = nodemailer.createTransport(transportConfig);
 
-      const info = await transporter.sendMail({
+      const info: any = await transporter.sendMail({
         to: targetEmail,
         from: `"Sparsh Trading Enquiries" <${smtpUser}>`,
         subject,
         html
       });
 
-      console.log("Email sent successfully via Gmail SMTP:", info.messageId);
-      return { success: true, provider: "smtp", message: info.messageId };
+
+      const messageId = info?.messageId || "sent";
+      console.log("Email sent successfully via Gmail SMTP:", messageId);
+      return { success: true, provider: "smtp", message: messageId };
     } catch (err: any) {
       console.warn("Direct SMTP attempt failed on cloud runtime:", err.message);
     }
+
   }
 
   // 2. HTTPS API Fallback (Works 100% on any Serverless Platform without SMTP blocks)

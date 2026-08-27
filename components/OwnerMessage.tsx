@@ -1,5 +1,6 @@
 import { BrandImage } from "@/components/BrandImage";
 import { partners, business } from "@/lib/business";
+import { MobileSwipeableContainer } from "@/components/MobileSwipeableContainer";
 
 export function OwnerMessage() {
   return (
@@ -20,7 +21,8 @@ export function OwnerMessage() {
           </p>
         </div>
 
-        <div className="cards partner-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 28 }}>
+        <MobileSwipeableContainer autoSlideInterval={4000} gridClassName="cards partner-grid">
+
           {partners.map((partner, index) => (
             <div
               key={partner.phone}
@@ -93,7 +95,7 @@ export function OwnerMessage() {
               </div>
             </div>
           ))}
-        </div>
+        </MobileSwipeableContainer>
       </div>
     </section>
   );

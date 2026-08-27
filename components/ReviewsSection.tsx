@@ -2,6 +2,8 @@
 
 import { useEffect, useState, FormEvent } from "react";
 import { BrandImage } from "@/components/BrandImage";
+import { MobileSwipeableContainer } from "@/components/MobileSwipeableContainer";
+
 
 type ReviewItem = {
   id?: string;
@@ -135,8 +137,8 @@ export function ReviewsSection() {
           </button>
         </div>
 
-        {/* Reviews Grid */}
-        <div className="cards" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
+        {/* Reviews Grid & Mobile Touch-Swipe */}
+        <MobileSwipeableContainer autoSlideInterval={3400} gridClassName="cards">
           {reviews.map((r, i) => (
             <div
               key={r.id || r._id || i}
@@ -191,7 +193,8 @@ export function ReviewsSection() {
               </div>
             </div>
           ))}
-        </div>
+        </MobileSwipeableContainer>
+
 
         {/* Review Modal */}
         {modalOpen && (

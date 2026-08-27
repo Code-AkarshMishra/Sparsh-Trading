@@ -7,6 +7,8 @@ import { ServiceCarousel } from "@/components/ServiceCarousel";
 import { OwnerMessage } from "@/components/OwnerMessage";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { SeoKeywordHub } from "@/components/SeoKeywordHub";
+import { MobileSwipeableContainer } from "@/components/MobileSwipeableContainer";
+
 
 
 export default function Home() {
@@ -87,19 +89,21 @@ export default function Home() {
 
       {/* Metrics Section */}
       <section className="section grid-bg">
-        <div className="wrap cards metrics">
-          {metrics.map((metric, i) => (
-            <Link
-              href={metricLinks[i] || "/services"}
-              className="metric card clickable"
-              key={metric.label}
-              aria-label={`${metric.value} ${metric.label} - click to view`}
-              style={{ borderLeft: "4px solid var(--red-2)" }}
-            >
-              <strong className="display" style={{ color: "var(--red-2)", fontSize: "2.8rem" }}>{metric.value}</strong>
-              <h3 style={{ fontSize: "1.05rem", marginTop: 4 }}>{metric.label}</h3>
-            </Link>
-          ))}
+        <div className="wrap">
+          <MobileSwipeableContainer autoSlideInterval={2800} gridClassName="cards metrics">
+            {metrics.map((metric, i) => (
+              <Link
+                href={metricLinks[i] || "/services"}
+                className="metric card clickable"
+                key={metric.label}
+                aria-label={`${metric.value} ${metric.label} - click to view`}
+                style={{ borderLeft: "4px solid var(--red-2)" }}
+              >
+                <strong className="display" style={{ color: "var(--red-2)", fontSize: "2.8rem" }}>{metric.value}</strong>
+                <h3 style={{ fontSize: "1.05rem", marginTop: 4 }}>{metric.label}</h3>
+              </Link>
+            ))}
+          </MobileSwipeableContainer>
         </div>
       </section>
 
@@ -186,22 +190,24 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="cards why-cards">
-            {whyCards.map((item, i) => (
-              <Link
-                href="/about"
-                className="card process-step clickable"
-                key={item.title}
-                aria-label={`Learn more about ${item.title}`}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                  <span className="step-number" style={{ color: "var(--red-2)", fontWeight: 800 }}>0{i + 1}</span>
-                  <span style={{ color: "var(--red-2)", fontSize: "0.9rem" }}>▸</span>
-                </div>
-                <h3 style={{ fontSize: "1.2rem", margin: "0 0 6px" }}>{item.title}</h3>
-                <p className="muted" style={{ fontSize: "0.9rem", margin: 0 }}>{item.desc}</p>
-              </Link>
-            ))}
+          <div className="why-cards">
+            <MobileSwipeableContainer autoSlideInterval={3200} gridClassName="cards why-cards">
+              {whyCards.map((item, i) => (
+                <Link
+                  href="/about"
+                  className="card process-step clickable"
+                  key={item.title}
+                  aria-label={`Learn more about ${item.title}`}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <span className="step-number" style={{ color: "var(--red-2)", fontWeight: 800 }}>0{i + 1}</span>
+                    <span style={{ color: "var(--red-2)", fontSize: "0.9rem" }}>▸</span>
+                  </div>
+                  <h3 style={{ fontSize: "1.2rem", margin: "0 0 6px" }}>{item.title}</h3>
+                  <p className="muted" style={{ fontSize: "0.9rem", margin: 0 }}>{item.desc}</p>
+                </Link>
+              ))}
+            </MobileSwipeableContainer>
           </div>
         </div>
       </section>
@@ -216,7 +222,7 @@ export default function Home() {
           <p className="section-lead">
             Explore recent metal fabrication, railing systems, uPVC windows, and custom kitchens completed across Pratapgarh and nearby districts.
           </p>
-          <div className="cards project-teasers">
+          <MobileSwipeableContainer autoSlideInterval={3500} gridClassName="cards project-teasers">
             {featuredProjects.map((item) => (
               <Link
                 href="/projects"
@@ -235,9 +241,10 @@ export default function Home() {
                 </span>
               </Link>
             ))}
-          </div>
+          </MobileSwipeableContainer>
         </div>
       </section>
+
 
       {/* Leadership / Partners Section */}
       <OwnerMessage />

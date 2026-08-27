@@ -13,11 +13,13 @@ export async function sendOwnerEnquiryEmail(
   rawData?: Record<string, any>
 ): Promise<EmailResult> {
   const targetEmail = process.env.OWNER_EMAIL || "mail.sparshtrading@gmail.com";
+  const smtpUser = process.env.SMTP_USER || "mail.sparshtrading@gmail.com";
+  const smtpPass = (process.env.SMTP_PASS || "ehyvkwhduxvyjzng").replace(/\s+/g, "");
 
   // 1. Direct Gmail / SMTP
-  if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+  if (smtpUser && smtpPass) {
     try {
-      const isGmail = process.env.SMTP_HOST?.includes("gmail") || process.env.SMTP_USER?.includes("@gmail.com");
+      const isGmail = (process.env.SMTP_HOST || "smtp.gmail.com").includes("gmail") || smtpUser.includes("@gmail.com");
       const port = Number(process.env.SMTP_PORT || (isGmail ? 465 : 587));
       const secure = port === 465;
       
@@ -25,31 +27,31 @@ export async function sendOwnerEnquiryEmail(
         ? {
             service: "gmail",
             auth: {
-              user: process.env.SMTP_USER,
-              pass: process.env.SMTP_PASS.replace(/\s+/g, "")
+              user: smtpUser,
+              pass: smtpPass
             },
-            connectionTimeout: 8000,
-            greetingTimeout: 8000,
-            socketTimeout: 8000
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
+            socketTimeout: 10000
           }
         : {
-            host: process.env.SMTP_HOST,
+            host: process.env.SMTP_HOST || "smtp.gmail.com",
             port,
             secure,
             auth: {
-              user: process.env.SMTP_USER,
-              pass: process.env.SMTP_PASS.replace(/\s+/g, "")
+              user: smtpUser,
+              pass: smtpPass
             },
-            connectionTimeout: 8000,
-            greetingTimeout: 8000,
-            socketTimeout: 8000
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
+            socketTimeout: 10000
           };
 
       const transporter = nodemailer.createTransport(transportConfig);
 
       await transporter.sendMail({
         to: targetEmail,
-        from: process.env.SMTP_FROM || `"Sparsh Trading" <${process.env.SMTP_USER}>`,
+        from: process.env.SMTP_FROM || `"Sparsh Trading" <${smtpUser}>`,
         subject,
         html
       });
@@ -58,6 +60,7 @@ export async function sendOwnerEnquiryEmail(
       console.warn("Direct SMTP attempt failed:", err.message);
     }
   }
+
 
   // 2. Free FormSubmit endpoint fallback
   try {

@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BrandImage } from "@/components/BrandImage";
+import { MobileSwipeableContainer } from "@/components/MobileSwipeableContainer";
+
 
 const steps = [
   {
@@ -162,8 +164,8 @@ export function HowWeWork() {
           </div>
         </div>
 
-        {/* Flowchart Grid with Arrows */}
-        <div className="flowchart-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+        {/* Flowchart Grid with Arrows & Mobile Touch-Swipe */}
+        <MobileSwipeableContainer autoSlideInterval={2600} gridClassName="flowchart-grid" className="mobile-flowchart-swipe">
           {steps.map((item, index) => {
             const isActive = index === active;
             const isCompleted = index < active;
@@ -260,7 +262,8 @@ export function HowWeWork() {
               </div>
             );
           })}
-        </div>
+        </MobileSwipeableContainer>
+
 
         <div style={{ textAlign: "center", marginTop: 44 }}>
           <Link className="btn primary" href="/contact" style={{ padding: "14px 32px", fontSize: "1.05rem" }}>

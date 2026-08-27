@@ -99,7 +99,8 @@ export function Footer() {
               href="https://linktr.ee/akarshmishra"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#ffffff", fontWeight: 700, textDecoration: "underline", textUnderlineOffset: "3px" }}
+              className="dev-credit-link"
+              style={{ color: "var(--red-2)", fontWeight: 800, textDecoration: "underline", textUnderlineOffset: "3px" }}
             >
               Akarsh Mishra ↗
             </a>
@@ -107,6 +108,7 @@ export function Footer() {
         </div>
       </div>
     </footer>
+
   );
 
 

@@ -266,6 +266,25 @@ html.dark-mode .muted {
   gap: 10px;
 }
 
+.dev-credit-link {
+  color: var(--red-2) !important;
+  transition: opacity 0.2s ease;
+}
+
+.dev-credit-link:hover {
+  opacity: 0.8;
+  color: var(--red) !important;
+}
+
+html.dark-mode .dev-credit-link {
+  color: #ff6b6b !important;
+}
+
+html.dark-mode .dev-credit-link:hover {
+  color: #ffffff !important;
+}
+
+
 /* =========================================================
    LAYOUT UTILITIES
    ========================================================= */

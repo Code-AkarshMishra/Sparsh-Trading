@@ -13,28 +13,18 @@ export function MobileSwipeableContainer({
   children,
   autoSlideInterval = 3000,
   className = "",
-  gridClassName = ""
+  gridClassName = "cards"
 }: MobileSwipeableContainerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   const total = children.length;
 
-  useEffect(() => {
-    function handleResize() {
-      setIsMobile(window.innerWidth <= 768);
-    }
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   // Auto-advance on mobile
   useEffect(() => {
-    if (!isMobile || total <= 1) return;
+    if (total <= 1) return;
 
     autoPlayRef.current = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % total);
@@ -43,14 +33,14 @@ export function MobileSwipeableContainer({
     return () => {
       if (autoPlayRef.current) clearInterval(autoPlayRef.current);
     };
-  }, [isMobile, total, autoSlideInterval, currentIndex]);
+  }, [total, autoSlideInterval, currentIndex]);
 
   const pauseAutoPlay = () => {
     if (autoPlayRef.current) clearInterval(autoPlayRef.current);
   };
 
   const resumeAutoPlay = () => {
-    if (!isMobile || total <= 1) return;
+    if (total <= 1) return;
     if (autoPlayRef.current) clearInterval(autoPlayRef.current);
     autoPlayRef.current = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % total);
@@ -58,6 +48,7 @@ export function MobileSwipeableContainer({
   };
 
   const handlePrev = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     pauseAutoPlay();
     setCurrentIndex((prev) => (prev - 1 + total) % total);
@@ -65,6 +56,7 @@ export function MobileSwipeableContainer({
   };
 
   const handleNext = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     pauseAutoPlay();
     setCurrentIndex((prev) => (prev + 1) % total);
@@ -101,120 +93,129 @@ export function MobileSwipeableContainer({
     resumeAutoPlay();
   };
 
-  // Desktop view: return standard grid
-  if (!isMobile) {
-    return <div className={gridClassName || "cards"}>{children}</div>;
-  }
-
-  // Mobile Swipe View
   return (
-    <div
-      className={`mobile-swipe-wrapper ${className}`}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      style={{ position: "relative", width: "100%", overflow: "hidden", padding: "6px 0 16px" }}
-    >
+    <div className={`responsive-swipe-root ${className}`}>
+      {/* Desktop Grid (Hidden on Mobile via CSS) */}
+      <div className={`desktop-grid-view ${gridClassName}`}>
+        {children}
+      </div>
+
+      {/* Mobile Swipe Carousel (Hidden on Desktop via CSS) */}
       <div
-        className="mobile-swipe-track"
+        className="mobile-swipe-view"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         style={{
-          display: "flex",
-          transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-          transform: `translateX(-${currentIndex * 100}%)`,
-          width: "100%"
+          position: "relative",
+          width: "100%",
+          overflow: "hidden",
+          padding: "4px 0 12px"
         }}
       >
-        {children.map((child, idx) => (
+        <div
+          className="mobile-swipe-track"
+          style={{
+            display: "flex",
+            transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+            transform: `translateX(-${currentIndex * 100}%)`,
+            width: "100%"
+          }}
+        >
+          {children.map((child, idx) => (
+            <div
+              key={idx}
+              className="mobile-swipe-slide"
+              style={{
+                width: "100%",
+                minWidth: "100%",
+                maxWidth: "100%",
+                flexShrink: 0,
+                boxSizing: "border-box",
+                padding: "2px 2px"
+              }}
+            >
+              {child}
+            </div>
+          ))}
+        </div>
+
+        {/* Swipe Navigation Buttons & Indicators */}
+        {total > 1 && (
           <div
-            key={idx}
-            className="mobile-swipe-slide"
+            className="mobile-swipe-controls"
             style={{
-              minWidth: "100%",
-              maxWidth: "100%",
-              flexShrink: 0,
-              boxSizing: "border-box",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginTop: 14,
               padding: "0 4px"
             }}
           >
-            {child}
+            <button
+              type="button"
+              onClick={handlePrev}
+              aria-label="Previous slide"
+              className="btn"
+              style={{
+                padding: "6px 14px",
+                minHeight: 36,
+                fontSize: "1rem",
+                background: "var(--surface)",
+                color: "var(--red-2)",
+                borderColor: "var(--red-2)",
+                fontWeight: 900
+              }}
+            >
+              ←
+            </button>
+
+            {/* Pagination Dots */}
+            <div style={{ display: "flex", gap: 6 }}>
+              {children.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  type="button"
+                  onClick={() => {
+                    pauseAutoPlay();
+                    setCurrentIndex(dotIdx);
+                    resumeAutoPlay();
+                  }}
+                  aria-label={`Go to slide ${dotIdx + 1}`}
+                  style={{
+                    width: currentIndex === dotIdx ? 24 : 8,
+                    height: 8,
+                    borderRadius: 4,
+                    border: "none",
+                    background: currentIndex === dotIdx ? "var(--red-2)" : "var(--border)",
+                    transition: "all 0.3s ease",
+                    cursor: "pointer",
+                    padding: 0
+                  }}
+                />
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleNext}
+              aria-label="Next slide"
+              className="btn"
+              style={{
+                padding: "6px 14px",
+                minHeight: 36,
+                fontSize: "1rem",
+                background: "var(--surface)",
+                color: "var(--red-2)",
+                borderColor: "var(--red-2)",
+                fontWeight: 900
+              }}
+            >
+              →
+            </button>
           </div>
-        ))}
+        )}
       </div>
-
-      {/* Swipe Navigation Buttons & Indicators */}
-      {total > 1 && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: 14,
-            padding: "0 6px"
-          }}
-        >
-          <button
-            type="button"
-            onClick={handlePrev}
-            aria-label="Previous item"
-            className="btn"
-            style={{
-              padding: "6px 14px",
-              minHeight: 34,
-              fontSize: "0.9rem",
-              background: "var(--surface-2)",
-              color: "var(--red-2)",
-              borderColor: "var(--red-2)",
-              fontWeight: 900
-            }}
-          >
-            ←
-          </button>
-
-          {/* Dots */}
-          <div style={{ display: "flex", gap: 6 }}>
-            {children.map((_, dotIdx) => (
-              <button
-                key={dotIdx}
-                type="button"
-                onClick={() => {
-                  pauseAutoPlay();
-                  setCurrentIndex(dotIdx);
-                  resumeAutoPlay();
-                }}
-                aria-label={`Go to slide ${dotIdx + 1}`}
-                style={{
-                  width: currentIndex === dotIdx ? 22 : 8,
-                  height: 8,
-                  borderRadius: 4,
-                  border: "none",
-                  background: currentIndex === dotIdx ? "var(--red-2)" : "var(--border)",
-                  transition: "all 0.3s ease",
-                  cursor: "pointer",
-                  padding: 0
-                }}
-              />
-            ))}
-          </div>
-
-          <button
-            type="button"
-            onClick={handleNext}
-            aria-label="Next item"
-            className="btn"
-            style={{
-              padding: "6px 14px",
-              minHeight: 34,
-              fontSize: "0.9rem",
-              background: "var(--surface-2)",
-              color: "var(--red-2)",
-              borderColor: "var(--red-2)",
-              fontWeight: 900
-            }}
-          >
-            →
-          </button>
-        </div>
-      )}
     </div>
   );
 }

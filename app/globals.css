@@ -298,11 +298,60 @@ html.dark-mode .muted {
   align-items: center;
 }
 
+@media (max-width: 860px) {
+  .split {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
 }
+
+.desktop-grid-view {
+  display: grid;
+}
+
+.mobile-swipe-view {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-grid-view {
+    display: none !important;
+  }
+  .mobile-swipe-view {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  .wrap {
+    width: calc(100% - 24px) !important;
+    padding: 0 !important;
+  }
+  .cards {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .mobile-swipe-slide {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .mobile-swipe-slide > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+}
+
+
 
 /* =========================================================
    BUTTONS

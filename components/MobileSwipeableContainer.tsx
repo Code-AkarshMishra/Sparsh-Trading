@@ -47,17 +47,21 @@ export function MobileSwipeableContainer({
     }, autoSlideInterval);
   };
 
-  const handlePrev = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handlePrev = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     pauseAutoPlay();
     setCurrentIndex((prev) => (prev - 1 + total) % total);
     resumeAutoPlay();
   };
 
-  const handleNext = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleNext = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     pauseAutoPlay();
     setCurrentIndex((prev) => (prev + 1) % total);
     resumeAutoPlay();
@@ -81,9 +85,9 @@ export function MobileSwipeableContainer({
     }
     const distance = touchStart - touchEnd;
     if (distance > 40) {
-      setCurrentIndex((prev) => (prev + 1) % total);
+      handleNext();
     } else if (distance < -40) {
-      setCurrentIndex((prev) => (prev - 1 + total) % total);
+      handlePrev();
     }
     setTouchStart(null);
     setTouchEnd(null);
@@ -91,13 +95,13 @@ export function MobileSwipeableContainer({
   };
 
   return (
-    <div className={`responsive-swipe-root ${className}`} style={{ width: "100%", position: "relative" }}>
-      {/* Desktop Grid */}
+    <div className={`responsive-swipe-root ${className}`} style={{ width: "100%", maxWidth: "100%", position: "relative" }}>
+      {/* Desktop View: Clean Multi-Column Grid */}
       <div className={`desktop-grid-view ${gridClassName}`}>
         {children}
       </div>
 
-      {/* Mobile Single Card Carousel */}
+      {/* Mobile View: 100% Full-Width Bulletproof Active Card */}
       <div
         className="mobile-swipe-view"
         onTouchStart={handleTouchStart}
@@ -105,50 +109,41 @@ export function MobileSwipeableContainer({
         onTouchEnd={handleTouchEnd}
         style={{
           width: "100%",
-          position: "relative",
-          overflow: "hidden"
+          maxWidth: "100%",
+          boxSizing: "border-box",
+          position: "relative"
         }}
       >
         <div
+          key={currentIndex}
+          className="mobile-active-card-container"
           style={{
-            display: "flex",
             width: "100%",
-            transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-            transform: `translateX(-${currentIndex * 100}%)`
+            maxWidth: "100%",
+            boxSizing: "border-box",
+            animation: "fadeInCard 0.28s ease-out"
           }}
         >
-          {children.map((child, idx) => (
-            <div
-              key={idx}
-              style={{
-                width: "100%",
-                minWidth: "100%",
-                maxWidth: "100%",
-                flexShrink: 0,
-                boxSizing: "border-box",
-                padding: "4px 4px"
-              }}
-            >
-              {child}
-            </div>
-          ))}
+          {children[currentIndex]}
         </div>
 
-        {/* Navigation Arrows & Indicator Dots */}
+        {/* Swipe Navigation Buttons & Indicators */}
         {total > 1 && (
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              marginTop: 18,
-              padding: "0 6px"
+              marginTop: 14,
+              padding: "0 2px",
+              width: "100%",
+              boxSizing: "border-box"
             }}
           >
             <button
               type="button"
               onClick={handlePrev}
-              aria-label="Previous card"
+              aria-label="Previous item"
               className="btn"
               style={{
                 padding: "6px 14px",
@@ -163,8 +158,8 @@ export function MobileSwipeableContainer({
               ←
             </button>
 
-
-            <div style={{ display: "flex", gap: 5 }}>
+            {/* Pagination Dots */}
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
               {children.map((_, dotIdx) => (
                 <button
                   key={dotIdx}
@@ -174,7 +169,7 @@ export function MobileSwipeableContainer({
                     setCurrentIndex(dotIdx);
                     resumeAutoPlay();
                   }}
-                  aria-label={`Go to item ${dotIdx + 1}`}
+                  aria-label={`Go to slide ${dotIdx + 1}`}
                   style={{
                     width: currentIndex === dotIdx ? 20 : 6,
                     height: 6,
@@ -192,13 +187,13 @@ export function MobileSwipeableContainer({
             <button
               type="button"
               onClick={handleNext}
-              aria-label="Next card"
+              aria-label="Next item"
               className="btn"
               style={{
                 padding: "6px 14px",
-                minHeight: 34,
+                minHeight: 36,
                 fontSize: "0.95rem",
-                background: "var(--surface)",
+                background: "var(--surface-2)",
                 color: "var(--red-2)",
                 borderColor: "var(--red-2)",
                 fontWeight: 900

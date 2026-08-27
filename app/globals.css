@@ -346,6 +346,17 @@ html.dark-mode .dev-credit-link:hover {
   display: grid !important;
 }
 
+@keyframes fadeInCard {
+  from {
+    opacity: 0.7;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 768px) {
   .mobile-only-flowchart {
     display: block !important;
@@ -362,6 +373,17 @@ html.dark-mode .dev-credit-link:hover {
     max-width: 100% !important;
     overflow: hidden !important;
   }
+  .mobile-active-card-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .mobile-active-card-container > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
   .wrap {
     width: calc(100% - 24px) !important;
     padding: 0 !important;
@@ -370,19 +392,8 @@ html.dark-mode .dev-credit-link:hover {
     grid-template-columns: 1fr !important;
     gap: 16px !important;
   }
-  .mobile-swipe-slide {
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  .mobile-swipe-slide > * {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-  }
 }
+
 
 
 

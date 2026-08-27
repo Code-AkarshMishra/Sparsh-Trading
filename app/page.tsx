@@ -6,6 +6,8 @@ import { BrandImage } from "@/components/BrandImage";
 import { ServiceCarousel } from "@/components/ServiceCarousel";
 import { OwnerMessage } from "@/components/OwnerMessage";
 import { ReviewsSection } from "@/components/ReviewsSection";
+import { SeoKeywordHub } from "@/components/SeoKeywordHub";
+
 
 export default function Home() {
   const metricLinks = ["/services", "/#how-we-work", "/contact", "/about"];
@@ -245,6 +247,10 @@ export default function Home() {
 
       {/* Verified Customer Reviews */}
       <ReviewsSection />
+
+      {/* 500+ SEO Keywords & FAQ Rich Snippet Hub */}
+      <SeoKeywordHub />
+
 
       {/* Rich Local SEO Guide for Uttar Pradesh (500+ Words) */}
       <section className="section grid-bg">

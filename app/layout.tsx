@@ -25,19 +25,39 @@ export const metadata: Metadata = {
     "Fabrication Workshop UP"
   ],
   metadataBase: new URL(process.env.APP_URL || "https://sparshtrading.shop"),
+  icons: {
+    icon: "/brand-logo.png",
+    shortcut: "/brand-logo.png",
+    apple: "/brand-logo.png"
+  },
   openGraph: {
-    title: "SPARSH TRADING | Top Steel Fabrication, uPVC Windows & Kitchens in UP",
+    title: "SPARSH TRADING | #1 Steel Fabrication, uPVC Windows & Kitchens in UP",
     description:
-      "Precision metal fabrication, uPVC window systems, toughened glass railings, and modular kitchens manufactured in Pratapgarh, serving all UP districts.",
+      "Architectural metal fabrication, soundproof uPVC windows, glass railings, PPGI frames & modular kitchens in Pratapgarh & UP. Call +91 8795662161 / +91 7007710096.",
     url: "https://sparshtrading.shop",
     siteName: "Sparsh Trading",
+    images: [
+      {
+        url: "https://sparshtrading.shop/brand-wordmark.png",
+        width: 1200,
+        height: 630,
+        alt: "SPARSH TRADING - Architectural Metal & Interior Solutions"
+      },
+      {
+        url: "https://sparshtrading.shop/brand-logo.png",
+        width: 512,
+        height: 512,
+        alt: "SPARSH TRADING Logo"
+      }
+    ],
     type: "website",
     locale: "en_IN"
   },
   twitter: {
     card: "summary_large_image",
-    title: "SPARSH TRADING | Architectural Metalwork & Windows",
-    description: "Custom steel fabrication, uPVC systems, glass railings & modular kitchens in Pratapgarh, UP."
+    title: "SPARSH TRADING | Steel Fabrication & Windows in UP",
+    description: "Custom steel fabrication, uPVC systems, glass railings & modular kitchens in Pratapgarh, UP.",
+    images: ["https://sparshtrading.shop/brand-wordmark.png"]
   },
   alternates: {
     canonical: "https://sparshtrading.shop",
@@ -47,6 +67,7 @@ export const metadata: Metadata = {
     }
   }
 };
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const schema = {

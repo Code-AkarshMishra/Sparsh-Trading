@@ -80,18 +80,20 @@ export function Footer() {
                 💬 Chat on WhatsApp
               </a>
             </div>
-            <p style={{ fontSize: "0.82rem", marginTop: 14, color: "var(--muted)" }}>
-              GST &amp; official invoices available for all residential &amp; commercial fabrication works.
+            <p style={{ fontSize: "0.86rem", marginTop: 14, color: "var(--text)" }}>
+              <strong>GSTIN:</strong> <span style={{ color: "var(--red-2)", fontWeight: 800, letterSpacing: "0.04em" }}>09ELTPM0163A1Z3</span><br />
+              <span style={{ fontSize: "0.8rem", color: "var(--muted)" }}>Official Tax Invoices for residential &amp; commercial fabrication.</span>
             </p>
           </div>
         </div>
       </div>
 
       <div className="wrap footer-bottom" style={{ borderTop: "1px solid var(--border)", paddingTop: 18, marginTop: 24, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, fontSize: "0.85rem" }}>
-        <span>© {new Date().getFullYear()} {business.name} (<strong>sparshtrading.shop</strong> / <strong>www.sparshtrading.shop</strong>). All rights reserved.</span>
+        <span>© {new Date().getFullYear()} {business.name} • GSTIN: <strong>09ELTPM0163A1Z3</strong> • <strong>sparshtrading.shop</strong></span>
         <span style={{ color: "var(--red-2)", fontWeight: 700 }}>Serving {business.serviceArea}</span>
       </div>
     </footer>
   );
+
 
 }

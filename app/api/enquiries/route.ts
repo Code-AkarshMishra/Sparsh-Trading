@@ -81,30 +81,41 @@ export async function POST(request: Request) {
       }
     }
 
-    // 3. Dispatch email notification in background without holding HTTP response
+    // 3. Dispatch email notification with await (Essential for Vercel serverless execution)
     const emailHtml = `
-      <h2>New Sparsh Trading Website Enquiry</h2>
-      <p><strong>Reference ID:</strong> ${enquiryId}</p>
-      <p><strong>Customer Name:</strong> ${body.name}</p>
-      <p><strong>Phone Number:</strong> ${body.phone}</p>
-      <p><strong>Service:</strong> ${body.service}</p>
-      <p><strong>Location:</strong> ${body.location || "Not specified"}</p>
-      <p><strong>Requirement Details:</strong> ${body.requirement || "None"}</p>
-      <p><strong>Additional Message:</strong> ${body.message || "None"}</p>
-      <p><strong>Time:</strong> ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #d92d20; border-radius: 8px;">
+        <h2 style="color: #d92d20; margin-top: 0;">New Sparsh Trading Website Enquiry</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Reference ID:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${enquiryId}</td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Customer Name:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${body.name}</td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Phone Number:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;"><a href="tel:${body.phone}">+91 ${body.phone}</a></td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Service Required:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${body.service}</td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Location / Area:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${body.location || "Not specified"}</td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Requirement Details:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${body.requirement || "None"}</td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Additional Message:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${body.message || "None"}</td></tr>
+        </table>
+        <p style="font-size: 0.85rem; color: #666; margin-top: 18px;">Submitted on ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
+      </div>
     `;
 
-    sendOwnerEnquiryEmail(
-      `New Enquiry: ${enquiryId} (${body.service}) - ${body.name}`,
-      emailHtml,
-      body
-    ).catch((mailErr) => console.warn("Email background dispatch:", mailErr));
+    let emailStatus = "pending";
+    try {
+      const emailResult = await sendOwnerEnquiryEmail(
+        `New Website Enquiry: ${enquiryId} (${body.service}) - ${body.name}`,
+        emailHtml,
+        body
+      );
+      emailStatus = emailResult.success ? "sent" : "error";
+    } catch (mailErr) {
+      console.warn("Email dispatch note:", mailErr);
+    }
 
     return ok({
       enquiryId,
-      emailStatus: "dispatched",
+      emailStatus,
       message: "Enquiry submitted successfully! Our team will contact you shortly."
     });
+
   } catch (error) {
     return handleError(error);
   }

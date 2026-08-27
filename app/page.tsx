@@ -181,7 +181,7 @@ export default function Home() {
       {/* Why Sparsh Section */}
       <section className="section grid-bg why-section">
         <div className="wrap split">
-          <div className="why-copy">
+          <div className="why-copy" style={{ minWidth: 0, width: "100%" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <span className="brand-dot-pulse" />
               <span className="eyebrow" style={{ color: "var(--red-2)", fontWeight: 700 }}>
@@ -198,8 +198,9 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="why-cards">
+          <div className="why-cards" style={{ minWidth: 0, width: "100%", maxWidth: "100%", overflow: "hidden", boxSizing: "border-box" }}>
             <MobileSwipeableContainer autoSlideInterval={3200} gridClassName="cards why-cards">
+
               {whyCards.map((item, i) => (
                 <Link
                   href="/about"

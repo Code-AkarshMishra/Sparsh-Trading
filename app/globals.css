@@ -312,17 +312,26 @@ html.dark-mode .dev-credit-link:hover {
 
 .split {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-  gap: clamp(28px, 5vw, 64px);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(24px, 4vw, 56px);
   align-items: center;
+  width: 100%;
 }
 
-@media (max-width: 860px) {
+.split > * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 900px) {
   .split {
     grid-template-columns: 1fr !important;
     gap: 28px !important;
   }
 }
+
 
 .cards {
   display: grid;

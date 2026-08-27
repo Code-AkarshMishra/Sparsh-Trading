@@ -1,5 +1,8 @@
 export const business = {
   name: "SPARSH TRADING",
+  domain: "sparshtrading.shop",
+  fullDomain: "www.sparshtrading.shop",
+  website: "https://sparshtrading.shop",
   office: "Meera Bhawan, Near Meera Bhawan Chauraha, Ashtbhuja Nagar, Pratapgarh, Uttar Pradesh - 230001",
   workshop: "Sagra Dhalayi, City Road, Pratapgarh, Uttar Pradesh",
   officeMapUrl: "https://www.google.com/maps/place/Sparsh+Trading/@25.9191811,81.9781645,783m/data=!3m2!1e3!4b1!4m6!3m5!1s0x399a9172fc012cdf:0x4d7f6d4a1eebec4!8m2!3d25.9191811!4d81.9807394!16s%2Fg%2F11mdffg0gk?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw%3D%3D",
@@ -12,6 +15,7 @@ export const business = {
   description:
     "Architectural metal fabrication, premium uPVC window systems, toughened glass railings, PPGI frames, and bespoke modular kitchens in Pratapgarh."
 };
+
 
 export const partners = [
   {

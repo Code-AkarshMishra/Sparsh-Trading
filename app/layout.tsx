@@ -24,11 +24,13 @@ export const metadata: Metadata = {
     "Tata Steel Chaukhat Prayagraj",
     "Fabrication Workshop UP"
   ],
-  metadataBase: new URL(process.env.APP_URL || "http://localhost:3000"),
+  metadataBase: new URL(process.env.APP_URL || "https://sparshtrading.shop"),
   openGraph: {
     title: "SPARSH TRADING | Top Steel Fabrication, uPVC Windows & Kitchens in UP",
     description:
       "Precision metal fabrication, uPVC window systems, toughened glass railings, and modular kitchens manufactured in Pratapgarh, serving all UP districts.",
+    url: "https://sparshtrading.shop",
+    siteName: "Sparsh Trading",
     type: "website",
     locale: "en_IN"
   },
@@ -37,7 +39,13 @@ export const metadata: Metadata = {
     title: "SPARSH TRADING | Architectural Metalwork & Windows",
     description: "Custom steel fabrication, uPVC systems, glass railings & modular kitchens in Pratapgarh, UP."
   },
-  alternates: { canonical: "/" }
+  alternates: {
+    canonical: "https://sparshtrading.shop",
+    languages: {
+      "en-IN": "https://sparshtrading.shop",
+      "x-default": "https://www.sparshtrading.shop"
+    }
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -45,8 +53,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
     name: "SPARSH TRADING",
-    image: `${process.env.APP_URL || "http://localhost:3000"}/brand-wordmark.png`,
-    logo: `${process.env.APP_URL || "http://localhost:3000"}/brand-logo.png`,
+    image: `${process.env.APP_URL || "https://sparshtrading.shop"}/brand-wordmark.png`,
+    logo: `${process.env.APP_URL || "https://sparshtrading.shop"}/brand-logo.png`,
     description:
       "Premier steel fabrication, uPVC window manufacturing, frameless glass railings, and modular kitchen solutions in Pratapgarh, Uttar Pradesh.",
     address: {
@@ -83,8 +91,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       "Ayodhya",
       "Uttar Pradesh"
     ],
-    url: process.env.APP_URL || "http://localhost:3000"
+    url: process.env.APP_URL || "https://sparshtrading.shop",
+    sameAs: [
+      "https://www.sparshtrading.shop",
+      "https://sparshtrading.shop"
+    ]
   };
+
 
   return (
     <html lang="en">

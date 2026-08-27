@@ -87,10 +87,11 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="wrap footer-bottom" style={{ borderTop: "1px solid var(--border)", paddingTop: 18, marginTop: 24, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-        <span>© {new Date().getFullYear()} {business.name}. All rights reserved.</span>
+      <div className="wrap footer-bottom" style={{ borderTop: "1px solid var(--border)", paddingTop: 18, marginTop: 24, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, fontSize: "0.85rem" }}>
+        <span>© {new Date().getFullYear()} {business.name} (<strong>sparshtrading.shop</strong> / <strong>www.sparshtrading.shop</strong>). All rights reserved.</span>
         <span style={{ color: "var(--red-2)", fontWeight: 700 }}>Serving {business.serviceArea}</span>
       </div>
     </footer>
   );
+
 }

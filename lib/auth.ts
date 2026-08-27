@@ -1,8 +1,10 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { User } from "@/models/User";
 import { connectDB } from "@/lib/db";
+import { fallbackStore, StoredUser } from "@/lib/offlineStore";
 
 export type Role = "SUPER_ADMIN" | "ADMIN" | "STAFF" | "CUSTOMER";
 export type SessionUser = { id: string; role: Role; name: string; email?: string; phone?: string };
@@ -10,7 +12,7 @@ export type SessionUser = { id: string; role: Role; name: string; email?: string
 const secret = () => new TextEncoder().encode(process.env.JWT_SECRET || "dev-only-change-this-secret");
 
 export async function hashPassword(password: string) {
-  return bcrypt.hash(password, 12);
+  return bcrypt.hash(password, 10);
 }
 
 export async function verifyPassword(password: string, hash: string) {
@@ -49,13 +51,28 @@ export function can(role: Role, allowed: Role[]) {
 
 export async function requireUser(allowed?: Role[]) {
   const session = await getSession();
-  if (!session || (allowed && !can(session.role, allowed))) {
-    throw Object.assign(new Error("Unauthorized"), { status: 401 });
+  if (!session) {
+    redirect("/login");
+  }
+  if (allowed && !can(session.role, allowed)) {
+    if (session.role === "CUSTOMER") {
+      redirect("/dashboard");
+    }
+    redirect("/login");
   }
   return session;
 }
 
-export async function findUserByLogin(login: string) {
-  await connectDB();
-  return User.findOne({ $or: [{ email: login.toLowerCase() }, { phone: login }] }).select("+passwordHash");
+export async function findUserByLogin(login: string): Promise<any | null> {
+  const db = await connectDB();
+  if (db) {
+    try {
+      const user = await User.findOne({ $or: [{ email: login.toLowerCase() }, { phone: login }] }).select("+passwordHash");
+      if (user) return user;
+    } catch {
+      // Fallback to offline store if query fails
+    }
+  }
+  return fallbackStore.findUserByLogin(login);
 }
+

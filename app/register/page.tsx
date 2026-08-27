@@ -18,7 +18,8 @@ export default function RegisterPage() {
               Already registered with Sparsh Trading?
             </p>
             <Link className="btn" href="/login">
-              Log in to your account &rarr;
+              Log in to your account →
+
             </Link>
           </div>
         </div>

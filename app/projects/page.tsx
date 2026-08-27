@@ -92,7 +92,8 @@ export default function ProjectsPage() {
                   </p>
                 )}
                 <span className="text-link" style={{ marginTop: 14 }}>
-                  Enquire about similar work &rarr;
+                  Enquire about similar work →
+
                 </span>
               </div>
             </Link>

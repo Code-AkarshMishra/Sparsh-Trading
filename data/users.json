@@ -1,0 +1,44 @@
+[
+  {
+    "id": "admin-1",
+    "name": "Sparsh Trading Admin",
+    "phone": "8795662161",
+    "email": "admin@sparshtrading.com",
+    "passwordHash": "$2a$10$mW.Ik/Ow/Jyl2Cjz.uvkWOoaLCCBjnNV41MMGJ.xXbws7cJqw5pGa",
+    "role": "SUPER_ADMIN",
+    "status": "ACTIVE",
+    "createdAt": "2026-08-27T09:38:51.196Z"
+  },
+  {
+    "id": "admin-2",
+    "name": "Partner Admin",
+    "phone": "7007710096",
+    "email": "partner@sparshtrading.com",
+    "passwordHash": "$2a$10$mW.Ik/Ow/Jyl2Cjz.uvkWOoaLCCBjnNV41MMGJ.xXbws7cJqw5pGa",
+    "role": "ADMIN",
+    "status": "ACTIVE",
+    "createdAt": "2026-08-27T09:38:51.196Z"
+  },
+  {
+    "id": "cust-1",
+    "name": "Akarsh Mishra",
+    "phone": "9876543210",
+    "email": "client@sparshtrading.com",
+    "passwordHash": "$2a$10$lDtf6grGIVyLgzr34/icgOsX6ERgCcLPcHoilgASWw47GVCozN9J.",
+    "role": "CUSTOMER",
+    "status": "ACTIVE",
+    "address": "Civil Lines, Pratapgarh",
+    "createdAt": "2026-08-27T09:38:51.451Z"
+  },
+  {
+    "name": "Akarsh Mishra",
+    "phone": "9682043203",
+    "email": "akarshmishra3145@gmail.com",
+    "passwordHash": "$2a$10$Mg.atTNXW0rbNTLI1ZRMIO0Gqzl5AKqlavJ7lit0RhJ0xR0fm/Qfi",
+    "role": "CUSTOMER",
+    "status": "ACTIVE",
+    "address": "Pratapgarh\nVill - Majhilaha Post - dhekahi",
+    "id": "usr_1787823683837_lu22",
+    "createdAt": "2026-08-27T09:41:23.837Z"
+  }
+]

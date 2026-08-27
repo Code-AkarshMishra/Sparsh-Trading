@@ -4,6 +4,7 @@ import { getSession } from "@/lib/auth";
 import { ok, handleError } from "@/lib/api";
 import { Enquiry, ActivityLog, Notification } from "@/models/Core";
 import { sendOwnerEnquiryEmail } from "@/lib/mail";
+import { fallbackStore } from "@/lib/offlineStore";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -32,14 +33,30 @@ export async function POST(request: Request) {
     const session = await getSession().catch(() => null);
     
     let enquiryId = generateFallbackEnquiryId();
-    const db = await connectDB();
 
+    // 1. Always save in fallback persistent store
+    try {
+      fallbackStore.saveEnquiry({
+        enquiryId,
+        name: body.name,
+        phone: body.phone,
+        email: body.email || undefined,
+        location: body.location || undefined,
+        service: body.service,
+        requirement: body.requirement || undefined,
+        dimensions: body.dimensions || undefined,
+        message: body.message || undefined,
+        status: "NEW",
+        customer: session?.id
+      });
+    } catch (saveErr) {
+      console.warn("Fallback store save note:", saveErr);
+    }
+
+    // 2. Also save in MongoDB if online
+    const db = await connectDB();
     if (db) {
       try {
-        const year = new Date().getFullYear();
-        const count = await Enquiry.countDocuments({ createdAt: { $gte: new Date(`${year}-01-01`) } });
-        enquiryId = `ST-ENQ-${year}-${String(count + 1).padStart(6, "0")}`;
-
         const enquiry = await Enquiry.create({
           ...body,
           customer: session?.role === "CUSTOMER" ? session.id : undefined,
@@ -60,11 +77,11 @@ export async function POST(request: Request) {
           message: `${enquiry.enquiryId} for ${enquiry.service}`
         }).catch(() => null);
       } catch (dbErr) {
-        console.warn("DB save encountered error, continuing with email delivery:", dbErr);
+        console.warn("MongoDB async sync note:", dbErr);
       }
     }
 
-    // Send owner notification email to mail.sparshtrading@gmail.com
+    // 3. Dispatch email notification in background without holding HTTP response
     const emailHtml = `
       <h2>New Sparsh Trading Website Enquiry</h2>
       <p><strong>Reference ID:</strong> ${enquiryId}</p>
@@ -77,16 +94,16 @@ export async function POST(request: Request) {
       <p><strong>Time:</strong> ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
     `;
 
-    const emailResult = await sendOwnerEnquiryEmail(
+    sendOwnerEnquiryEmail(
       `New Enquiry: ${enquiryId} (${body.service}) - ${body.name}`,
       emailHtml,
       body
-    );
+    ).catch((mailErr) => console.warn("Email background dispatch:", mailErr));
 
     return ok({
       enquiryId,
-      emailStatus: emailResult.success ? "sent" : "fallback",
-      message: "Enquiry processed successfully."
+      emailStatus: "dispatched",
+      message: "Enquiry submitted successfully! Our team will contact you shortly."
     });
   } catch (error) {
     return handleError(error);
@@ -95,15 +112,21 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const db = await connectDB();
-    if (!db) {
-      return ok({ enquiries: [] });
-    }
     const session = await getSession().catch(() => null);
-    const query = session?.role === "CUSTOMER" ? { customer: session.id } : {};
-    const enquiries = await Enquiry.find(query).sort({ createdAt: -1 }).limit(100).lean();
+    const db = await connectDB();
+    if (db) {
+      try {
+        const query = session?.role === "CUSTOMER" ? { customer: session.id } : {};
+        const enquiries = await Enquiry.find(query).sort({ createdAt: -1 }).limit(100).lean();
+        return ok({ enquiries });
+      } catch {
+        // Fallback to local store
+      }
+    }
+    const enquiries = fallbackStore.getEnquiries(session?.role === "CUSTOMER" ? session.id : undefined);
     return ok({ enquiries });
   } catch (error) {
     return handleError(error);
   }
 }
+

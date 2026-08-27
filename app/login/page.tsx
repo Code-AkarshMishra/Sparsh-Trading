@@ -18,7 +18,8 @@ export default function LoginPage() {
               Don't have an account yet?
             </p>
             <Link className="btn" href="/register">
-              Create Customer Account &rarr;
+              Create Customer Account →
+
             </Link>
           </div>
         </div>

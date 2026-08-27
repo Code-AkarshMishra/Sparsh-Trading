@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
   const router = useRouter();
@@ -11,7 +12,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
-    setMessage("Authenticating, please wait...");
+    setMessage("Processing authentication, please wait...");
     const payload = Object.fromEntries(new FormData(event.currentTarget).entries());
     
     try {
@@ -23,48 +24,65 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
       const json = await res.json();
       if (!res.ok) {
         setLoading(false);
-        return setMessage(json.message || "Something went wrong.");
+        return setMessage(json.message || "Invalid credentials or user already exists.");
       }
-      router.push(json.data.user.role === "CUSTOMER" ? "/dashboard" : "/admin");
+      
+      const role = json.data?.user?.role;
+      setMessage("Authenticated successfully! Redirecting...");
+      setTimeout(() => {
+        if (role === "CUSTOMER") {
+          router.push("/dashboard");
+        } else {
+          router.push("/admin");
+        }
+        router.refresh();
+      }, 500);
     } catch {
       setLoading(false);
-      setMessage("Connection error. Please try again.");
+      setMessage("Connection issue. Please verify credentials or try again.");
     }
   }
 
   return (
-    <form className="form card" onSubmit={submit}>
+    <form className="form card" onSubmit={submit} style={{ borderTop: "3px solid var(--red-2)", padding: 28 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+        <span className="brand-dot-pulse" />
+        <span className="eyebrow" style={{ color: "var(--red-2)", margin: 0, fontWeight: 700 }}>
+          {mode === "login" ? "Account Access" : "Customer Registration"}
+        </span>
+      </div>
+
       {mode === "register" && (
         <label>
-          Full Name
-          <input name="name" required placeholder="e.g. Rahul Sharma" />
+          Full Name *
+          <input name="name" required minLength={2} placeholder="e.g. Rahul Sharma" />
         </label>
       )}
 
       {mode === "login" ? (
         <label>
-          Email or Phone Number
-          <input name="login" required placeholder="Enter your registered email or phone" />
+          Phone Number or Email *
+          <input name="login" required placeholder="Enter 10-digit mobile or email address" />
         </label>
       ) : (
         <>
           <label>
-            Phone Number
-            <input name="phone" required type="tel" placeholder="10-digit mobile number" />
+            10-Digit Mobile Number *
+            <input name="phone" required type="tel" minLength={10} placeholder="e.g. 9876543210" />
           </label>
           <label>
-            Email Address (optional)
+            Email Address (Optional)
             <input name="email" type="email" placeholder="name@example.com" />
           </label>
           <label>
-            Project / Site Address
-            <textarea name="address" placeholder="Enter delivery or project address in Pratapgarh / UP" />
+            Site / Delivery Address in UP
+            <textarea name="address" rows={2} placeholder="e.g. Civil Lines, Pratapgarh / Ashtbhuja Nagar" />
           </label>
         </>
       )}
 
       <label>
-        Password
+        Password *
         <input
           name="password"
           type="password"
@@ -74,15 +92,45 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         />
       </label>
 
-      <button className="btn primary" type="submit" disabled={loading} style={{ marginTop: 8 }}>
-        {loading ? "Processing..." : mode === "login" ? "Login to Account" : "Create Account"}
+      <button className="btn primary" type="submit" disabled={loading} style={{ marginTop: 12, padding: "12px 24px", fontSize: "1rem" }}>
+        {loading ? "Processing..." : mode === "login" ? "Login to Account →" : "Create Customer Account →"}
       </button>
 
       {message && (
-        <p role="status" className={message.includes("error") || message.includes("wrong") ? "muted" : "eyebrow"} style={{ marginTop: 12 }}>
+        <div
+          role="status"
+          style={{
+            marginTop: 14,
+            padding: "10px 14px",
+            borderRadius: 6,
+            background: message.includes("success") ? "rgba(34, 197, 94, 0.15)" : "rgba(217, 45, 32, 0.15)",
+            color: message.includes("success") ? "#16a34a" : "var(--red-2)",
+            fontWeight: 600,
+            fontSize: "0.9rem"
+          }}
+        >
           {message}
-        </p>
+        </div>
       )}
+
+      <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid var(--border)", display: "flex", justifyContent: "space-between", fontSize: "0.88rem" }}>
+        {mode === "login" ? (
+          <>
+            <span className="muted">Don't have an account?</span>
+            <Link href="/register" style={{ color: "var(--red-2)", fontWeight: 700 }}>
+              Register Here →
+            </Link>
+          </>
+        ) : (
+          <>
+            <span className="muted">Already registered?</span>
+            <Link href="/login" style={{ color: "var(--red-2)", fontWeight: 700 }}>
+              Login Here →
+            </Link>
+          </>
+        )}
+      </div>
     </form>
   );
 }
+

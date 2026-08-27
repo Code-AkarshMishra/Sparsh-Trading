@@ -13,3 +13,11 @@ Yahan aap apni photos aur videos dal sakte hain:
 In files ko website par dikhane ke liye:
 `lib/mediaData.ts` file me bas image ya video ka path add kar dein (jaise: `url: "/media/modular-kitchen/kitchen-photo-1.jpg"`).
 Vo automatically service page aur Category-wise Gallery dono jagah show hogi!
+
+## Owner photo
+
+Place the owner's portrait at `owner/owner-photo.jpg`. The About page will show it in the owner message section.
+
+## Bulk upload
+
+For 30-40 assets, sign in as an admin and open `/admin/content`. Choose `Gallery`, select up to 50 JPG, PNG, WebP, MP4, WebM, or MOV files, enter the project category, and publish. Individual files can still be kept in the folders above and added to `lib/mediaData.ts` when they need their own title and description.

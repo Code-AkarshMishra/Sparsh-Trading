@@ -1,9 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, CSSProperties } from "react";
 
-export function BrandImage({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
-    const [failed, setFailed] = useState(false);
-    if (failed) return null;
-    return <img className={className} src={src} alt={alt} onError={() => setFailed(true)} />;
-}
+export function BrandImage({
+  src,
+  alt,
+  className = "",
+  style
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return <img className={className} style={style} src={src} alt={alt} onError={() => setFailed(true)} />;
+}

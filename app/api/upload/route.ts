@@ -4,7 +4,7 @@ import crypto from "crypto";
 import { requireUser } from "@/lib/auth";
 import { ok, fail, handleError } from "@/lib/api";
 
-const allowed = new Set(["image/jpeg", "image/png", "image/webp", "application/pdf"]);
+const allowed = new Set(["image/jpeg", "image/png", "image/webp", "video/mp4", "video/webm", "video/quicktime", "application/pdf"]);
 
 export async function POST(request: Request) {
   try {
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     const file = form.get("file");
     if (!(file instanceof File)) return fail("File is required", 422);
     if (!allowed.has(file.type)) return fail("Unsupported file type", 422);
-    if (file.size > 5 * 1024 * 1024) return fail("File must be 5MB or smaller", 422);
+    if (file.size > 25 * 1024 * 1024) return fail("File must be 25MB or smaller", 422);
     const bytes = Buffer.from(await file.arrayBuffer());
     const ext = path.extname(file.name).toLowerCase() || `.${file.type.split("/")[1]}`;
     const name = `${crypto.randomUUID()}${ext}`;

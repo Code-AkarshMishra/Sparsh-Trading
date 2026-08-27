@@ -21,18 +21,18 @@ export const business = {
 
 export const partners = [
   {
-    name: "Partner & Operations Lead",
-    title: "Managing Partner",
+    name: "Ankush Mishra",
+    title: "Co-Founder",
     phone: "8795662161",
-    role: "Steel Fabrication, PPGI & Site Installation",
-    image: "/media/owner/partner1.jpg"
+    role: "Steel Fabrication, Estimation & Client Advisory",
+    image: "/media/owner/sparsh-trading-operations-partner-pratapgarh.webp"
   },
   {
-    name: "Partner & Design Lead",
-    title: "Executive Partner",
+    name: "Adarsh Singh",
+    title: "Co-Founder",
     phone: "7007710096",
-    role: "uPVC Systems, Glass Railings & Modular Kitchens",
-    image: "/media/owner/partner2.jpg"
+    role: "Workshop Fabrication, uPVC Systems & Site Fitting",
+    image: "/media/owner/sparsh-trading-design-partner-pratapgarh.webp"
   }
 ];
 

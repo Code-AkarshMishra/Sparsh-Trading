@@ -1,6 +1,6 @@
 import { connectDB } from "@/lib/db";
-import { requireUser } from "@/lib/auth";
-import { ok, handleError } from "@/lib/api";
+import { requireApiAuth } from "@/lib/auth";
+import { ok, fail, handleError, verifyAllowedOrigin } from "@/lib/api";
 import { Invoice, ActivityLog } from "@/models/Core";
 
 async function nextInvoiceNumber() {
@@ -12,7 +12,7 @@ async function nextInvoiceNumber() {
 export async function GET() {
   try {
     await connectDB();
-    const user = await requireUser(["SUPER_ADMIN", "ADMIN", "CUSTOMER"]);
+    const user = await requireApiAuth(["SUPER_ADMIN", "ADMIN", "CUSTOMER"]);
     const query = user.role === "CUSTOMER" ? { customer: user.id } : {};
     return ok({ invoices: await Invoice.find(query).populate("customer", "name phone email").sort({ createdAt: -1 }).lean() });
   } catch (error) {
@@ -22,8 +22,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    if (!verifyAllowedOrigin(request)) {
+      return fail("Cross-origin request blocked.", 403);
+    }
     await connectDB();
-    const user = await requireUser(["SUPER_ADMIN", "ADMIN"]);
+    const user = await requireApiAuth(["SUPER_ADMIN", "ADMIN"]);
     const body = await request.json();
     const subtotal = body.items?.reduce((sum: number, item: { quantity: number; unitPrice: number }) => sum + Number(item.quantity || 0) * Number(item.unitPrice || 0), 0) || 0;
     const discount = Number(body.discount || 0);

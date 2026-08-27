@@ -12,7 +12,7 @@ export type MediaItem = {
 
 /**
  * SPARSH TRADING - OFFICIAL MEDIA CATALOGUE
- * Integrated with real photos & site videos from public/media/
+ * Integrated with SEO-optimized WebP photos & site videos from public/media/
  */
 
 export const mediaCatalogue: MediaItem[] = [
@@ -23,7 +23,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "modular-kitchen",
     category: "Modular Kitchen",
     type: "image",
-    url: "/media/modular-kitchen/kitchen1.jpeg",
+    url: "/media/modular-kitchen/modern-l-shaped-acrylic-modular-kitchen.webp",
     description: "Custom acrylic gloss cabinetry with soft-close tandem drawers and chimney integration."
   },
   {
@@ -32,7 +32,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "modular-kitchen",
     category: "Modular Kitchen",
     type: "image",
-    url: "/media/modular-kitchen/kitchen2.jpeg",
+    url: "/media/modular-kitchen/contemporary-island-modular-kitchen-countertop.webp",
     description: "Dual-tone modular kitchen cabinets with quartz stone worktop and built-in appliance bays."
   },
   {
@@ -41,7 +41,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "modular-kitchen",
     category: "Modular Kitchen",
     type: "image",
-    url: "/media/modular-kitchen/kitchen3.jpeg",
+    url: "/media/modular-kitchen/hydraulic-overhead-modular-kitchen-cabinets.webp",
     description: "Hydraulic lift-up frosted glass cabinets with integrated under-cabinet warm LED lighting."
   },
   {
@@ -50,7 +50,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "modular-kitchen",
     category: "Modular Kitchen",
     type: "image",
-    url: "/media/modular-kitchen/kitchen4.jpeg",
+    url: "/media/modular-kitchen/stainless-steel-304-kitchen-tandem-baskets.webp",
     description: "Heavy gauge stainless steel storage baskets with silent telescopic drawer channels."
   },
   {
@@ -59,7 +59,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "modular-kitchen",
     category: "Modular Kitchen",
     type: "image",
-    url: "/media/modular-kitchen/kitchen5.jpeg",
+    url: "/media/modular-kitchen/tall-pantry-storage-modular-kitchen-pratapgarh.webp",
     description: "Multi-tier tall pantry unit with easy glide mechanisms and maximum space utilization."
   },
   {
@@ -68,7 +68,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "modular-kitchen",
     category: "Modular Kitchen",
     type: "image",
-    url: "/media/modular-kitchen/kitchen6.jpeg",
+    url: "/media/modular-kitchen/waterproof-marine-ply-modular-kitchen-fitting.webp",
     description: "Marine HDHMR water-resistant board structure with anti-scratch seamless edge banding."
   },
   {
@@ -97,7 +97,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "toughened-glass-railing",
     category: "Toughened Glass Railing",
     type: "image",
-    url: "/media/toughened-glass-railing/glassrail.jpeg",
+    url: "/media/toughened-glass-railing/frameless-12mm-toughened-glass-balcony-railing.webp",
     description: "12mm safety toughened glass mounted with heavy SS 304 floor spigot clamps."
   },
   {
@@ -106,7 +106,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "toughened-glass-railing",
     category: "Toughened Glass Railing",
     type: "image",
-    url: "/media/toughened-glass-railing/glassrail2.jpeg",
+    url: "/media/toughened-glass-railing/staircase-toughened-glass-railing-ss-handrail.webp",
     description: "Architectural staircase glass balustrade with seamless continuous stainless steel top pipe."
   },
   {
@@ -115,7 +115,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "toughened-glass-railing",
     category: "Toughened Glass Railing",
     type: "image",
-    url: "/media/toughened-glass-railing/glassrail3.jpeg",
+    url: "/media/toughened-glass-railing/terrace-architectural-glass-balustrade-pratapgarh.webp",
     description: "Weather-resistant toughened glass with mirror polished SS fittings for residential balconies."
   },
   {
@@ -124,7 +124,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "toughened-glass-railing",
     category: "Toughened Glass Railing",
     type: "image",
-    url: "/media/toughened-glass-railing/glassrail4.jpeg",
+    url: "/media/toughened-glass-railing/high-elevation-glass-railing-fitting-up.webp",
     description: "Precision laser alignment and high tensile anchoring for maximum structural safety."
   },
 
@@ -135,7 +135,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "upvc-windows-doors",
     category: "uPVC Windows & Doors",
     type: "image",
-    url: "/media/upvc-windows-doors/upvc.jpeg",
+    url: "/media/upvc-windows-doors/3-track-sliding-upvc-window-with-mosquito-mesh.webp",
     description: "Multi-chamber lead-free uPVC profile with mosquito mesh shutter and soundproof seals."
   },
   {
@@ -144,7 +144,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "upvc-windows-doors",
     category: "uPVC Windows & Doors",
     type: "image",
-    url: "/media/upvc-windows-doors/upvc1.jpeg",
+    url: "/media/upvc-windows-doors/soundproof-casement-upvc-window-system.webp",
     description: "Acoustic insulated casement window with dual EPDM weather strips and multi-point lock."
   },
   {
@@ -153,7 +153,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "upvc-windows-doors",
     category: "uPVC Windows & Doors",
     type: "image",
-    url: "/media/upvc-windows-doors/upvc2.jpeg",
+    url: "/media/upvc-windows-doors/acoustic-upvc-balcony-sliding-door-pratapgarh.webp",
     description: "Smooth sliding heavy section uPVC door designed for large exterior openings and ventilation."
   },
   {
@@ -162,7 +162,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "upvc-windows-doors",
     category: "uPVC Windows & Doors",
     type: "image",
-    url: "/media/upvc-windows-doors/upvc3.jpeg",
+    url: "/media/upvc-windows-doors/reinforced-upvc-window-toughened-glass.webp",
     description: "Toughened float glass panels encased in reinforced galvanized steel core uPVC frames."
   },
   {
@@ -171,7 +171,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "upvc-windows-doors",
     category: "uPVC Windows & Doors",
     type: "image",
-    url: "/media/upvc-windows-doors/upvc4.jpeg",
+    url: "/media/upvc-windows-doors/powder-coated-domal-aluminium-sliding-window.webp",
     description: "Millimeter-precision site installation with thermal expansion joint sealing."
   },
   {
@@ -180,7 +180,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "upvc-windows-doors",
     category: "uPVC Windows & Doors",
     type: "image",
-    url: "/media/upvc-windows-doors/upvc5.jpeg",
+    url: "/media/upvc-windows-doors/tropicalized-lead-free-upvc-profile-inspection.webp",
     description: "UV-stabilized virgin uPVC material tested for extreme temperature resistance."
   },
   {
@@ -200,7 +200,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "interior-decor",
     category: "Interior Decor",
     type: "image",
-    url: "/media/interior-decor/interior.jpeg",
+    url: "/media/interior-decor/laser-cut-metal-living-room-partition-screen.webp",
     description: "Geometric CNC laser cut metal partition screen with premium powder-coat finish."
   },
   {
@@ -209,7 +209,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "interior-decor",
     category: "Interior Decor",
     type: "image",
-    url: "/media/interior-decor/interior-decor-2.jpeg",
+    url: "/media/interior-decor/decorative-cnc-metal-jaali-screen-mandir-backdrop.webp",
     description: "Custom crafted architectural metal screen for interior spatial division and aesthetics."
   },
 
@@ -220,7 +220,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "steel-fabrication",
     category: "Steel Fabrication",
     type: "image",
-    url: "/media/image.jpeg",
+    url: "/media/steel-fabrication/heavy-structural-steel-fabrication-pratapgarh.webp",
     description: "Precision welded structural steel frame with anti-rust zinc primer coat."
   },
   {
@@ -229,7 +229,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "steel-fabrication",
     category: "Steel Fabrication",
     type: "video",
-    url: "/media/introvideo.mp4",
+    url: "/media/steel-fabrication/sparsh-trading-fabrication-machinery-demo.mp4",
     description: "Workshop machinery, cutting, precision welding and craftsmanship at our Pratapgarh workshop."
   },
 
@@ -240,7 +240,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "ppgi-steel-door-window-frames",
     category: "PPGI Frames",
     type: "image",
-    url: "/media/image.jpeg",
+    url: "/media/steel-fabrication/heavy-structural-steel-fabrication-pratapgarh.webp",
     description: "Rust-proof, termite-proof galvanized iron frames for residential and commercial construction."
   },
   {
@@ -249,7 +249,7 @@ export const mediaCatalogue: MediaItem[] = [
     serviceSlug: "aluminium-windows",
     category: "Aluminium Windows",
     type: "image",
-    url: "/media/upvc-windows-doors/upvc1.jpeg",
+    url: "/media/upvc-windows-doors/soundproof-casement-upvc-window-system.webp",
     description: "Slim profile Jindal section aluminium frames with tinted sun-control glass."
   }
 ];

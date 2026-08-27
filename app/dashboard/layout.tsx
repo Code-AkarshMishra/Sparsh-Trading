@@ -7,9 +7,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const navItems = [
     { label: "Overview", href: "/dashboard", icon: "📊" },
+    { label: "Place New Order", href: "/dashboard/new-order", icon: "🛒" },
     { label: "My Orders", href: "/dashboard/orders", icon: "📦" },
-    { label: "Invoices", href: "/dashboard/invoices", icon: "🧾" },
-    { label: "New Enquiry", href: "/contact", icon: "💬" }
+    { label: "Invoices", href: "/dashboard/invoices", icon: "🧾" }
   ];
 
   return (

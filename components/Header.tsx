@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { business } from "@/lib/business";
 import { useEffect, useState } from "react";
 import { BrandImage } from "@/components/BrandImage";
+import { UserIcon } from "@/components/Icons";
 
 export function Header() {
   const pathname = usePathname();
@@ -15,13 +16,13 @@ export function Header() {
 
   const baseNavItems = [
     { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
     { label: "Services", href: "/services" },
     { label: "Products", href: "/products" },
     { label: "Projects", href: "/projects" },
+    { label: "Guides", href: "/guides" },
+    { label: "B2B Supply", href: "/b2b" },
     { label: "Gallery", href: "/gallery" },
-    { label: "How We Work", href: "/#how-we-work" },
-    { label: "Reviews", href: "/#reviews" },
+    { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" }
   ];
 
@@ -112,46 +113,55 @@ export function Header() {
           );
         })}
 
-        <Link onClick={closeMenu} className="btn primary" href="/contact">
+        <Link onClick={closeMenu} className="btn primary" href="/contact" style={{ padding: "8px 16px", minHeight: 36, fontSize: "0.88rem", borderRadius: 6 }}>
           Get Quote
         </Link>
 
         {user ? (
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             <Link
               onClick={closeMenu}
               href={user.role === "CUSTOMER" ? "/dashboard" : "/admin"}
               className="btn"
               style={{
-                fontSize: "0.86rem",
-                padding: "8px 14px",
-                borderColor: "var(--red-2)",
-                color: "var(--red-2)",
-                fontWeight: 700
+                fontSize: "0.82rem",
+                padding: "6px 12px",
+                minHeight: 34,
+                borderColor: "var(--border)",
+                color: "var(--strong)",
+                fontWeight: 600,
+                borderRadius: 6,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6
               }}
               title={`Logged in as ${user.name}`}
             >
-              👤 {user.name?.split(" ")[0] || "Account"}
+              <UserIcon width={14} height={14} style={{ color: "var(--red-2)" }} />
+              {user.name?.split(" ")[0] || "Account"}
             </Link>
             <button
               type="button"
               onClick={handleLogout}
               className="btn"
               style={{
-                fontSize: "0.84rem",
-                padding: "8px 14px",
+                fontSize: "0.82rem",
+                padding: "6px 12px",
+                minHeight: 34,
                 cursor: "pointer",
-                background: "rgba(217, 45, 32, 0.1)",
+                background: "transparent",
                 color: "var(--red-2)",
-                borderColor: "var(--red-2)",
-                fontWeight: 700
+                borderColor: "var(--border)",
+                fontWeight: 600,
+                borderRadius: 6
               }}
             >
               Logout
             </button>
           </div>
         ) : (
-          <Link onClick={closeMenu} className="btn" href="/login">
+          <Link onClick={closeMenu} className="btn" href="/login" style={{ padding: "8px 14px", minHeight: 36, fontSize: "0.88rem", borderRadius: 6, display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <UserIcon width={15} height={15} />
             Login
           </Link>
         )}
@@ -174,14 +184,13 @@ export function Header() {
             type="button"
             onClick={handleLogout}
             aria-label="Logout"
-            title="Logout"
-            style={{ background: "transparent", border: "none", color: "var(--red-2)", fontSize: "0.85rem", cursor: "pointer", fontWeight: 700 }}
+            title={`Logged in as ${user.name}. Click to logout.`}
           >
-            Logout
+            <UserIcon width={18} height={18} style={{ color: "var(--red-2)" }} />
           </button>
         ) : (
-          <Link className="mobile-login" href="/login" onClick={closeMenu} aria-label="Login">
-            ⇥
+          <Link className="mobile-login" href="/login" onClick={closeMenu} aria-label="Login" title="Login">
+            <UserIcon width={18} height={18} />
           </Link>
         )}
 

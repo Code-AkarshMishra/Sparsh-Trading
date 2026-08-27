@@ -149,7 +149,6 @@ export function ReviewsSection() {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 border: "1.5px solid var(--border)",
-                background: "var(--surface)",
                 position: "relative"
               }}
             >

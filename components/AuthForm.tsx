@@ -132,10 +132,25 @@ export function AuthForm({ mode, portal = "customer" }: AuthFormProps) {
         </>
       )}
 
-      <label style={{ display: "block", marginBottom: 16 }}>
-        <span style={{ fontSize: "0.9rem", fontWeight: 700, display: "block", marginBottom: 6 }}>
-          {isAdmin ? "Administrative Password *" : "Account Password *"}
-        </span>
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+          <span style={{ fontSize: "0.9rem", fontWeight: 700 }}>
+            {isAdmin ? "Administrative Password *" : "Account Password *"}
+          </span>
+          {mode === "login" && (
+            <Link
+              href="/forgot-password"
+              style={{
+                fontSize: "0.82rem",
+                color: "var(--red-2)",
+                fontWeight: 700,
+                textDecoration: "none"
+              }}
+            >
+              Forgot Password?
+            </Link>
+          )}
+        </div>
         <input
           name="password"
           type="password"
@@ -144,7 +159,7 @@ export function AuthForm({ mode, portal = "customer" }: AuthFormProps) {
           autoComplete={mode === "login" ? "current-password" : "new-password"}
           placeholder="••••••••••••"
         />
-      </label>
+      </div>
 
       <button
         className="btn primary"

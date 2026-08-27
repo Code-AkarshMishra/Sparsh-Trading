@@ -1,6 +1,6 @@
 import { connectDB } from "@/lib/db";
-import { requireUser } from "@/lib/auth";
-import { ok, handleError } from "@/lib/api";
+import { requireApiAuth } from "@/lib/auth";
+import { ok, fail, handleError, verifyAllowedOrigin } from "@/lib/api";
 import { Order, OrderStatusHistory, ActivityLog } from "@/models/Core";
 
 async function nextOrderId() {
@@ -12,7 +12,7 @@ async function nextOrderId() {
 export async function GET() {
   try {
     await connectDB();
-    const user = await requireUser(["SUPER_ADMIN", "ADMIN", "STAFF", "CUSTOMER"]);
+    const user = await requireApiAuth(["SUPER_ADMIN", "ADMIN", "STAFF", "CUSTOMER"]);
     const query = user.role === "CUSTOMER" ? { customer: user.id } : {};
     return ok({ orders: await Order.find(query).populate("customer", "name phone email").sort({ createdAt: -1 }).lean() });
   } catch (error) {
@@ -22,9 +22,13 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    if (!verifyAllowedOrigin(request)) {
+      return fail("Cross-origin request blocked.", 403);
+    }
     await connectDB();
-    const user = await requireUser(["SUPER_ADMIN", "ADMIN"]);
-    const order = await Order.create({ ...(await request.json()), orderId: await nextOrderId() });
+    const user = await requireApiAuth(["SUPER_ADMIN", "ADMIN"]);
+    const body = await request.json();
+    const order = await Order.create({ ...body, orderId: await nextOrderId() });
     await OrderStatusHistory.create({ order: order._id, status: order.currentStatus, note: "Order created", updatedBy: user.id });
     await ActivityLog.create({ user: user.id, action: "ORDER_CREATED", entity: "Order", entityId: String(order._id) });
     return ok({ order });

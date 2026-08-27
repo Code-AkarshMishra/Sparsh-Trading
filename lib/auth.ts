@@ -63,6 +63,17 @@ export async function requireUser(allowed?: Role[]) {
   return session;
 }
 
+export async function requireApiAuth(allowed?: Role[]): Promise<SessionUser> {
+  const session = await getSession();
+  if (!session) {
+    throw new (await import("@/lib/api")).ApiError("Authentication required.", 401);
+  }
+  if (allowed && !can(session.role, allowed)) {
+    throw new (await import("@/lib/api")).ApiError("Access denied. Insufficient permissions.", 403);
+  }
+  return session;
+}
+
 export async function findUserByLogin(login: string): Promise<any | null> {
   const db = await connectDB();
   if (db) {

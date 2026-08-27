@@ -5,10 +5,34 @@ export default async function AdminTeamPage() {
   await requireUser(["SUPER_ADMIN", "ADMIN", "STAFF"]);
 
   const team = [
-    { name: "Akarsh Mishra", role: "Co-Founder & Technical Operations", phone: "+91 8795662161", area: "Pratapgarh / Project Estimation & Client Advisory", status: "ACTIVE" },
-    { name: "Sparsh Mishra", role: "Co-Founder & Site Installation Lead", phone: "+91 7007710096", area: "Pratapgarh / Workshop Fabrication & Site Fitting", status: "ACTIVE" },
-    { name: "Senior Fabrication Master", role: "TIG/MIG Welding & CNC Steel Cutting", phone: "Workshop Direct", area: "Pratapgarh Workshop Hub", status: "ACTIVE" },
-    { name: "uPVC Installation Specialist", role: "Multi-Chamber Windows & Door Sealing", phone: "On-Site Team", area: "UP Installation Division", status: "ACTIVE" }
+    {
+      name: "Aniket Mishra",
+      role: "Owner / Founder",
+      phone: "+91 9695041222",
+      area: "Pratapgarh / Business Operations & Management",
+      status: "ACTIVE"
+    },
+    {
+      name: "Ankush Mishra",
+      role: "Co-Founder",
+      phone: "+91 8795662161",
+      area: "Pratapgarh / Project Estimation & Client Advisory",
+      status: "ACTIVE"
+    },
+    {
+      name: "Adarsh Singh",
+      role: "Co-Founder",
+      phone: "+91 7007710096",
+      area: "Pratapgarh / Workshop Fabrication & Site Fitting",
+      status: "ACTIVE"
+    },
+    {
+      name: "Akarsh Mishra",
+      role: "DevOps & Technical Lead",
+      phone: "N/A",
+      area: "Platform Infrastructure & Security",
+      status: "ACTIVE"
+    }
   ];
 
   return (
@@ -20,10 +44,10 @@ export default async function AdminTeamPage() {
         </span>
       </div>
       <h1 className="display big-title" style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)" }}>
-        Partners &amp; Fabrication Team ({team.length})
+        Partners &amp; Leadership Team ({team.length})
       </h1>
       <p className="muted" style={{ margin: "6px 0 24px" }}>
-        Leadership directory, project supervisors, and on-site craftsmen managing fabrication projects.
+        Official leadership directory and management team of Sparsh Trading.
       </p>
 
       <DataTable

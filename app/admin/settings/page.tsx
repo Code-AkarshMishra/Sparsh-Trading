@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { business } from "@/lib/business";
+import { ChangePasswordForm } from "@/components/ChangePasswordForm";
 
 export default async function AdminSettingsPage() {
   await requireUser(["SUPER_ADMIN", "ADMIN", "STAFF"]);
@@ -55,6 +56,15 @@ export default async function AdminSettingsPage() {
             <div><strong>Offline Fallback:</strong> Active &amp; Ready (Local JSON Engine)</div>
             <div><strong>SMTP Gateway:</strong> Gmail SSL Direct (Port 465) + HTTPS Fallback</div>
           </div>
+        </div>
+
+        {/* Password & Security Management */}
+        <div className="card" style={{ padding: 24, borderTop: "4px solid var(--red-2)", borderRadius: 12 }}>
+          <h3 style={{ margin: "0 0 6px", fontSize: "1.2rem", color: "var(--strong)" }}>🔒 Password &amp; Credentials</h3>
+          <p className="muted" style={{ fontSize: "0.85rem", marginBottom: 16 }}>
+            Update your account password. All passwords are automatically hashed with Bcrypt (10 rounds).
+          </p>
+          <ChangePasswordForm />
         </div>
       </div>
     </div>

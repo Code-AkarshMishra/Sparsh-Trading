@@ -11,6 +11,8 @@ export type StoredUser = {
   role: "SUPER_ADMIN" | "ADMIN" | "STAFF" | "CUSTOMER";
   status: "ACTIVE" | "INACTIVE";
   address?: string;
+  resetTokenHash?: string;
+  resetTokenExpiresAt?: string;
   createdAt: string;
 };
 
@@ -174,6 +176,39 @@ export const fallbackStore = {
     users.push(newUser);
     writeJsonFile("users.json", users);
     return newUser;
+  },
+  setResetToken(login: string, resetTokenHash: string, expiresAt: string): boolean {
+    const users = this.getUsers();
+    const l = login.trim().toLowerCase();
+    const user = users.find((u) => u.phone === login || (u.email && u.email.toLowerCase() === l));
+    if (!user) return false;
+    user.resetTokenHash = resetTokenHash;
+    user.resetTokenExpiresAt = expiresAt;
+    writeJsonFile("users.json", users);
+    return true;
+  },
+  updatePasswordWithToken(login: string, tokenHash: string, newPasswordHash: string): boolean {
+    const users = this.getUsers();
+    const l = login.trim().toLowerCase();
+    const user = users.find((u) => u.phone === login || (u.email && u.email.toLowerCase() === l));
+    if (!user || !user.resetTokenHash || !user.resetTokenExpiresAt) return false;
+    if (new Date(user.resetTokenExpiresAt).getTime() < Date.now()) return false;
+    if (user.resetTokenHash !== tokenHash) return false;
+    user.passwordHash = newPasswordHash;
+    user.resetTokenHash = undefined;
+    user.resetTokenExpiresAt = undefined;
+    writeJsonFile("users.json", users);
+    return true;
+  },
+  updatePassword(userId: string, newPasswordHash: string): boolean {
+    const users = this.getUsers();
+    const user = users.find((u) => u.id === userId);
+    if (!user) return false;
+    user.passwordHash = newPasswordHash;
+    user.resetTokenHash = undefined;
+    user.resetTokenExpiresAt = undefined;
+    writeJsonFile("users.json", users);
+    return true;
   },
 
   // Enquiries

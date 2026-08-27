@@ -13,22 +13,22 @@ export async function sendOwnerEnquiryEmail(
   rawData?: Record<string, any>
 ): Promise<EmailResult> {
   const targetEmail = process.env.OWNER_EMAIL || "mail.sparshtrading@gmail.com";
-  const smtpUser = process.env.SMTP_USER || "mail.sparshtrading@gmail.com";
-  const smtpPass = (process.env.SMTP_PASS || "ehyvkwhduxvyjzng").replace(/\s+/g, "");
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, "") : undefined;
 
-  // 1. Direct Gmail SMTP via Port 465 (SSL)
+  // 1. Direct Gmail / SMTP via Port 465 (SSL)
   if (smtpUser && smtpPass) {
     try {
       const transportConfig: SMTPTransport.Options = {
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
+        host: process.env.SMTP_HOST || "smtp.gmail.com",
+        port: Number(process.env.SMTP_PORT) || 465,
+        secure: (process.env.SMTP_SECURE || "true") === "true",
         auth: {
           user: smtpUser,
           pass: smtpPass
         },
         tls: {
-          rejectUnauthorized: false
+          rejectUnauthorized: true
         },
         connectionTimeout: 8000,
         greetingTimeout: 8000,
@@ -44,14 +44,11 @@ export async function sendOwnerEnquiryEmail(
         html
       });
 
-
       const messageId = info?.messageId || "sent";
-      console.log("Email sent successfully via Gmail SMTP:", messageId);
       return { success: true, provider: "smtp", message: messageId };
     } catch (err: any) {
-      console.warn("Direct SMTP attempt failed on cloud runtime:", err.message);
+      console.warn("Direct SMTP attempt failed:", err.message);
     }
-
   }
 
   // 2. HTTPS API Fallback (Works 100% on any Serverless Platform without SMTP blocks)

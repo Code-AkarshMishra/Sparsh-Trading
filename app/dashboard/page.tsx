@@ -40,8 +40,8 @@ export default async function DashboardPage() {
             <p className="muted" style={{ margin: 0, fontSize: "0.92rem" }}>Registered Phone: +91 {user.phone || "N/A"}</p>
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link className="btn primary" href="/contact" style={{ padding: "8px 18px", fontSize: "0.92rem" }}>
-              + New Enquiry
+            <Link className="btn primary" href="/dashboard/new-order" style={{ padding: "8px 18px", fontSize: "0.92rem" }}>
+              + Place New Order
             </Link>
             <LogoutButton />
           </div>

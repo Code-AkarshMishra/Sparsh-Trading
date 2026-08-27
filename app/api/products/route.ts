@@ -1,9 +1,8 @@
 import { connectDB } from "@/lib/db";
-import { requireUser } from "@/lib/auth";
-import { ok, handleError } from "@/lib/api";
+import { requireApiAuth } from "@/lib/auth";
+import { ok, fail, handleError, verifyAllowedOrigin } from "@/lib/api";
 import { Product } from "@/models/Core";
 import { defaultProductsCatalogue } from "@/lib/productsData";
-
 
 export async function GET(request: Request) {
   try {
@@ -50,15 +49,18 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    if (!verifyAllowedOrigin(request)) {
+      return fail("Cross-origin request blocked.", 403);
+    }
     const db = await connectDB();
-    await requireUser(["SUPER_ADMIN", "ADMIN"]);
+    await requireApiAuth(["SUPER_ADMIN", "ADMIN"]);
+    const body = await request.json();
     if (db) {
-      const product = await Product.create(await request.json());
+      const product = await Product.create(body);
       return ok({ product });
     }
-    return ok({ product: { ...await request.json(), _id: `p_${Date.now()}` } });
+    return ok({ product: { ...body, _id: `p_${Date.now()}` } });
   } catch (error) {
     return handleError(error);
   }
 }
-

@@ -65,6 +65,9 @@ export const metadata: Metadata = {
       "en-IN": "https://sparshtrading.shop",
       "x-default": "https://www.sparshtrading.shop"
     }
+  },
+  verification: {
+    google: "6Xnbq-3OC8tH2EZ7_acIb9Bf49spiVVl_Y57eZ3Z5Gw"
   }
 };
 
@@ -123,6 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        <meta name="google-site-verification" content="6Xnbq-3OC8tH2EZ7_acIb9Bf49spiVVl_Y57eZ3Z5Gw" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { regionalCities } from "@/lib/seoKeywords";
+import { MapPinIcon } from "@/components/Icons";
 
 export function SeoKeywordHub() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(0);
@@ -44,34 +45,36 @@ export function SeoKeywordHub() {
   };
 
   return (
-    <section className="section grid-bg seo-keyword-hub" aria-labelledby="faq-section-title" style={{ borderTop: "2px solid var(--red-2)" }}>
+    <section className="section seo-keyword-hub" aria-labelledby="faq-section-title">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
       <div className="wrap">
-        <div style={{ textAlign: "center", marginBottom: 36 }}>
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
             <span className="brand-dot-pulse" />
             <span className="eyebrow" style={{ color: "var(--red-2)", fontWeight: 700 }}>
               Help &amp; Buyer Guidance
             </span>
           </div>
-          <h2 id="faq-section-title" className="display section-title" style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)" }}>
+          <h2 id="faq-section-title" className="section-title" style={{ textAlign: "center" }}>
             Frequently Asked Questions
           </h2>
-          <p className="section-lead" style={{ maxWidth: 720, margin: "10px auto 0" }}>
+          <p className="section-lead" style={{ maxWidth: 700, margin: "8px auto 0" }}>
             Common questions regarding materials, custom fabrication standards, pricing, and on-site fitting across Uttar Pradesh.
           </p>
         </div>
 
         {/* FAQ Accordion */}
-        <div className="cards" style={{ gridTemplateColumns: "1fr", gap: 14, maxWidth: 900, margin: "0 auto" }}>
+        <div className="cards" style={{ gridTemplateColumns: "1fr", gap: 12, maxWidth: 860, margin: "0 auto" }}>
           {faqs.map((faq, idx) => (
             <div
               key={faq.q}
               className="card"
               style={{
-                padding: "20px 24px",
+                padding: "18px 22px",
                 cursor: "pointer",
+                borderRadius: 10,
+                border: "1px solid var(--border)",
                 borderLeft: expandedFaq === idx ? "4px solid var(--red-2)" : "1px solid var(--border)",
                 background: expandedFaq === idx ? "var(--surface-2)" : "var(--surface)",
                 transition: "all 0.2s ease"
@@ -79,15 +82,15 @@ export function SeoKeywordHub() {
               onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-                <h3 style={{ margin: 0, fontSize: "1.1rem", color: "var(--strong)", fontWeight: 700 }}>
+                <h3 style={{ margin: 0, fontSize: "1.05rem", color: "var(--strong)", fontWeight: 600, lineHeight: 1.4 }}>
                   {faq.q}
                 </h3>
-                <span style={{ color: "var(--red-2)", fontSize: "1.4rem", fontWeight: 900, minWidth: 20, textAlign: "center" }}>
+                <span style={{ color: "var(--red-2)", fontSize: "1.3rem", fontWeight: 700, minWidth: 20, textAlign: "center" }}>
                   {expandedFaq === idx ? "−" : "+"}
                 </span>
               </div>
               {expandedFaq === idx && (
-                <p style={{ margin: "14px 0 0", fontSize: "0.98rem", lineHeight: 1.65, color: "var(--text)" }}>
+                <p style={{ margin: "12px 0 0", fontSize: "0.94rem", lineHeight: 1.65, color: "var(--text)" }}>
                   {faq.a}
                 </p>
               )}
@@ -96,25 +99,32 @@ export function SeoKeywordHub() {
         </div>
 
         {/* Serving Regions List */}
-        <div style={{ marginTop: 40, textAlign: "center" }}>
-          <p style={{ fontSize: "0.92rem", color: "var(--muted)", margin: "0 0 12px" }}>
-            ⚡ <strong>Active Workshop Delivery &amp; Fitting Coverage:</strong>
+        <div style={{ marginTop: 36, textAlign: "center" }}>
+          <p style={{ fontSize: "0.88rem", color: "var(--muted)", margin: "0 0 10px", fontWeight: 600 }}>
+            Active Workshop Delivery &amp; Fitting Coverage:
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", maxWidth: 900, margin: "0 auto" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", maxWidth: 840, margin: "0 auto" }}>
             {regionalCities.map((city) => (
-              <span
+              <Link
                 key={city}
+                href={`/locations/${city.toLowerCase()}`}
                 style={{
-                  fontSize: "0.82rem",
-                  background: "rgba(217, 45, 32, 0.12)",
-                  color: "var(--red-2)",
-                  padding: "4px 12px",
-                  borderRadius: 6,
-                  fontWeight: 700
+                  fontSize: "0.8rem",
+                  background: "var(--surface-2)",
+                  color: "var(--text)",
+                  border: "1px solid var(--border)",
+                  padding: "5px 12px",
+                  borderRadius: 16,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4
                 }}
               >
-                📍 {city}
-              </span>
+                <MapPinIcon width={12} height={12} style={{ color: "var(--red-2)" }} />
+                {city}
+              </Link>
             ))}
           </div>
         </div>

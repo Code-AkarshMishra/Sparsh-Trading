@@ -1,23 +1,39 @@
 import { z } from "zod";
 import { connectDB } from "@/lib/db";
 import { createSession, hashPassword } from "@/lib/auth";
-import { ok, fail, handleError } from "@/lib/api";
+import { ok, fail, handleError, verifyAllowedOrigin } from "@/lib/api";
 import { User } from "@/models/User";
 import { ActivityLog } from "@/models/Core";
 import { fallbackStore } from "@/lib/offlineStore";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 const schema = z.object({
-  name: z.string().min(2),
-  phone: z.string().min(10),
-  email: z.string().email().optional().or(z.literal("")),
-  password: z.string().min(8),
-  address: z.string().optional()
+  name: z.string().min(2).max(100).trim(),
+  phone: z.string().min(10).max(15).regex(/^[0-9+ -]+$/, "Invalid phone number format"),
+  email: z.string().email().max(100).optional().or(z.literal("")),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .max(100)
+    .regex(/[a-zA-Z]/, "Password must contain at least one letter")
+    .regex(/[0-9]/, "Password must contain at least one number"),
+  address: z.string().max(200).optional()
 });
 
 export async function POST(request: Request) {
   try {
+    if (!verifyAllowedOrigin(request)) {
+      return fail("Cross-origin registration blocked.", 403);
+    }
+
+    const clientIp = getClientIp(request);
+    const rateCheck = checkRateLimit(`register_${clientIp}`, { limit: 5, windowMs: 15 * 60 * 1000 });
+    if (!rateCheck.allowed) {
+      return fail("Too many registration attempts from this network. Please try again later.", 429);
+    }
+
     const body = schema.parse(await request.json());
-    const email = body.email ? body.email.toLowerCase() : undefined;
+    const email = body.email ? body.email.toLowerCase().trim() : undefined;
     const passwordHash = await hashPassword(body.password);
 
     const db = await connectDB();
@@ -55,4 +71,3 @@ export async function POST(request: Request) {
     return handleError(error);
   }
 }
-

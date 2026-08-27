@@ -1,5 +1,5 @@
 import { connectDB } from "@/lib/db";
-import { requireUser } from "@/lib/auth";
+import { requireApiAuth } from "@/lib/auth";
 import { ok, handleError } from "@/lib/api";
 import { Enquiry, Order, Invoice, Product, Project } from "@/models/Core";
 import { User } from "@/models/User";
@@ -7,7 +7,7 @@ import { User } from "@/models/User";
 export async function GET() {
   try {
     await connectDB();
-    await requireUser(["SUPER_ADMIN", "ADMIN", "STAFF"]);
+    await requireApiAuth(["SUPER_ADMIN", "ADMIN", "STAFF"]);
     const [customers, newEnquiries, pendingEnquiries, activeOrders, completedOrders, pendingInvoices, revenue, products, projects] = await Promise.all([
       User.countDocuments({ role: "CUSTOMER" }),
       Enquiry.countDocuments({ status: "NEW" }),

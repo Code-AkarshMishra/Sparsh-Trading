@@ -1,6 +1,6 @@
 import { connectDB } from "@/lib/db";
-import { requireUser } from "@/lib/auth";
-import { ok, handleError } from "@/lib/api";
+import { requireApiAuth } from "@/lib/auth";
+import { ok, fail, handleError, verifyAllowedOrigin } from "@/lib/api";
 import { Project } from "@/models/Core";
 import { defaultProjects } from "@/lib/projectsData";
 
@@ -21,17 +21,19 @@ export async function GET() {
   }
 }
 
-
 export async function POST(request: Request) {
   try {
-    const db = await connectDB();
-    await requireUser(["SUPER_ADMIN", "ADMIN"]);
-    if (db) {
-      return ok({ project: await Project.create(await request.json()) });
+    if (!verifyAllowedOrigin(request)) {
+      return fail("Cross-origin request blocked.", 403);
     }
-    return ok({ project: { ...await request.json(), _id: `prj_${Date.now()}` } });
+    const db = await connectDB();
+    await requireApiAuth(["SUPER_ADMIN", "ADMIN"]);
+    const body = await request.json();
+    if (db) {
+      return ok({ project: await Project.create(body) });
+    }
+    return ok({ project: { ...body, _id: `prj_${Date.now()}` } });
   } catch (error) {
     return handleError(error);
   }
 }
-

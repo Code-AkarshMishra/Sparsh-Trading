@@ -8,6 +8,7 @@ import { OwnerMessage } from "@/components/OwnerMessage";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { SeoKeywordHub } from "@/components/SeoKeywordHub";
 import { MobileSwipeableContainer } from "@/components/MobileSwipeableContainer";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 
 
 
@@ -44,13 +45,13 @@ export default function Home() {
       {/* Full-Width Video Section */}
       <section className="hero-video-section" id="home" aria-label="Sparsh Trading workshop video">
         <video
-          src="/hero-video.mp4"
+          src="/sparsh-trading-workshop-fabrication-pratapgarh.mp4"
           autoPlay
           muted
           loop
           playsInline
           preload="metadata"
-          aria-label="SPARSH TRADING workshop hero video"
+          aria-label="SPARSH TRADING steel fabrication and uPVC workshop in Pratapgarh"
         />
         <div className="hero-video-overlay" />
       </section>
@@ -180,52 +181,51 @@ export default function Home() {
 
       {/* Why Sparsh Section */}
       <section className="section grid-bg why-section">
-        <div className="wrap split">
-          <div className="why-copy" style={{ minWidth: 0, width: "100%" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <span className="brand-dot-pulse" />
-              <span className="eyebrow" style={{ color: "var(--red-2)", fontWeight: 700 }}>
-                The Sparsh Advantage
-              </span>
-            </div>
-            <h2 className="display big-title">Built Around Quality. Driven By Care.</h2>
-            <p className="muted" style={{ fontSize: "1.05rem", lineHeight: 1.65 }}>
-              Great structural work begins with honest conversations, laser measurements, and top-grade steel and uPVC profiles. We make sure every gate, window, and railing is fabricated to last for generations without sagging or rust.
-            </p>
-            <div style={{ marginTop: 28 }}>
-              <Link className="btn primary" href="/about">
-                Learn About Our Standards →
-              </Link>
-            </div>
-          </div>
-          <div className="why-cards" style={{ minWidth: 0, width: "100%", maxWidth: "100%", overflow: "hidden", boxSizing: "border-box" }}>
-            <MobileSwipeableContainer autoSlideInterval={3200} gridClassName="cards why-cards">
-
-              {whyCards.map((item, i) => (
-                <Link
-                  href="/about"
-                  className="card process-step clickable"
-                  key={item.title}
-                  aria-label={`Learn more about ${item.title}`}
-                  style={{
-                    border: "2px solid var(--border-strong)",
-                    borderTop: "4px solid var(--red-2)",
-                    borderRadius: 12,
-                    padding: "24px 20px",
-                    background: "var(--surface)",
-                    display: "block",
-                    boxShadow: "var(--card-shadow)"
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                    <span className="step-number" style={{ color: "var(--red-2)", fontWeight: 800 }}>0{i + 1}</span>
-                    <span style={{ color: "var(--red-2)", fontSize: "0.9rem" }}>▸</span>
-                  </div>
-                  <h3 style={{ fontSize: "1.2rem", margin: "0 0 6px" }}>{item.title}</h3>
-                  <p className="muted" style={{ fontSize: "0.9rem", margin: 0 }}>{item.desc}</p>
+        <div className="wrap">
+          <div className="split">
+            <div className="why-copy" style={{ minWidth: 0, width: "100%" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <span className="brand-dot-pulse" />
+                <span className="eyebrow" style={{ color: "var(--red-2)", fontWeight: 700 }}>
+                  The Sparsh Advantage
+                </span>
+              </div>
+              <h2 className="big-title">Built Around Quality. Driven By Care.</h2>
+              <p className="muted" style={{ fontSize: "1.02rem", lineHeight: 1.65 }}>
+                Great structural work begins with honest conversations, laser measurements, and top-grade steel and uPVC profiles. We make sure every gate, window, and railing is fabricated to last for generations without sagging or rust.
+              </p>
+              <div style={{ marginTop: 24 }}>
+                <Link className="btn primary" href="/about" style={{ borderRadius: 8 }}>
+                  Learn About Our Standards →
                 </Link>
-              ))}
-            </MobileSwipeableContainer>
+              </div>
+            </div>
+            <div className="why-cards" style={{ minWidth: 0, width: "100%", maxWidth: "100%", overflow: "hidden", boxSizing: "border-box" }}>
+              <MobileSwipeableContainer autoSlideInterval={3200} gridClassName="cards why-cards">
+                {whyCards.map((item, i) => (
+                  <Link
+                    href="/about"
+                    className="card clickable"
+                    key={item.title}
+                    aria-label={`Learn more about ${item.title}`}
+                    style={{
+                      border: "1px solid var(--border)",
+                      borderRadius: 12,
+                      padding: "22px 20px",
+                      display: "block",
+                      boxShadow: "var(--card-shadow)"
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                      <span className="step-number" style={{ color: "var(--red-2)", fontWeight: 700, fontSize: "0.95rem" }}>0{i + 1}</span>
+                      <span style={{ color: "var(--red-2)", fontSize: "0.85rem" }}>▸</span>
+                    </div>
+                    <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: "0 0 6px", color: "var(--strong)" }}>{item.title}</h3>
+                    <p className="muted" style={{ fontSize: "0.88rem", margin: 0, lineHeight: 1.55 }}>{item.desc}</p>
+                  </Link>
+                ))}
+              </MobileSwipeableContainer>
+            </div>
           </div>
         </div>
       </section>
@@ -278,6 +278,9 @@ export default function Home() {
 
       {/* Leadership / Partners Section */}
       <OwnerMessage />
+
+      {/* Interactive Before & After Renovation Slider */}
+      <BeforeAfterSlider />
 
       {/* How We Work Flowchart Section */}
       <HowWeWork />
@@ -355,36 +358,38 @@ export default function Home() {
 
       {/* Start a Conversation / Enquiry Form */}
       <section className="section" id="enquiry">
-        <div className="wrap split">
-          <div>
-            <span className="eyebrow" style={{ color: "var(--red-2)", fontWeight: 700 }}>
-              Direct Consultation
-            </span>
-            <h2 className="display big-title">Have a project in mind?</h2>
-            <p className="muted" style={{ fontSize: "1.05rem", lineHeight: 1.65 }}>
-              Tell us what you want made. We will discuss the right material grades, prepare exact measurements, and provide a clear quote.
-            </p>
-            
-            <div className="card" style={{ padding: 20, marginTop: 24, borderLeft: "3px solid var(--red-2)" }}>
-              <strong style={{ display: "block", color: "var(--strong)", fontSize: "1.05rem" }}>
-                Direct Partner Lines:
-              </strong>
-              <p style={{ margin: "6px 0 12px", color: "var(--text)" }}>
-                Call: <a href={`tel:${business.phones[0]}`} style={{ color: "var(--red-2)", fontWeight: 700 }}>+91 {business.phones[0]}</a> &nbsp;|&nbsp; 
-                <a href={`tel:${business.phones[1]}`} style={{ color: "var(--red-2)", fontWeight: 700 }}> +91 {business.phones[1]}</a>
+        <div className="wrap">
+          <div className="split">
+            <div>
+              <span className="eyebrow" style={{ color: "var(--red-2)", fontWeight: 700 }}>
+                Direct Consultation
+              </span>
+              <h2 className="big-title">Have a project in mind?</h2>
+              <p className="muted" style={{ fontSize: "1.02rem", lineHeight: 1.65 }}>
+                Tell us what you want made. We will discuss the right material grades, prepare exact measurements, and provide a clear quote.
               </p>
-              <div className="actions">
-                <a className="btn primary" href={`tel:${business.phones[0]}`} style={{ padding: "8px 16px", fontSize: "0.88rem" }}>
-                  📞 Call Now
-                </a>
-                <a className="btn whatsapp-action" href={`https://wa.me/${business.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ padding: "8px 16px", fontSize: "0.88rem" }}>
-                  💬 WhatsApp
-                </a>
+              
+              <div className="card" style={{ padding: "22px 20px", marginTop: 22, borderRadius: 10, border: "1px solid var(--border)", background: "var(--surface)" }}>
+                <strong style={{ display: "block", color: "var(--strong)", fontSize: "1rem", marginBottom: 6 }}>
+                  Direct Partner Lines:
+                </strong>
+                <p style={{ margin: "0 0 12px", color: "var(--text)", fontSize: "0.92rem" }}>
+                  Call: <a href={`tel:${business.phones[0]}`} style={{ color: "var(--red-2)", fontWeight: 700 }}>+91 {business.phones[0]}</a> &nbsp;|&nbsp; 
+                  <a href={`tel:${business.phones[1]}`} style={{ color: "var(--red-2)", fontWeight: 700 }}> +91 {business.phones[1]}</a>
+                </p>
+                <div className="actions" style={{ gap: 8 }}>
+                  <a className="btn primary" href={`tel:${business.phones[0]}`} style={{ padding: "8px 16px", fontSize: "0.86rem", borderRadius: 6 }}>
+                    Call Now
+                  </a>
+                  <a className="btn whatsapp-action" href={`https://wa.me/${business.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ padding: "8px 16px", fontSize: "0.86rem", borderRadius: 6 }}>
+                    WhatsApp
+                  </a>
+                </div>
               </div>
             </div>
+            
+            <EnquiryForm />
           </div>
-          
-          <EnquiryForm />
         </div>
       </section>
 
@@ -395,27 +400,27 @@ export default function Home() {
             <span className="eyebrow" style={{ color: "var(--red-2)", fontWeight: 700 }}>
               Visit Us in Pratapgarh
             </span>
-            <h2 className="display big-title" style={{ margin: "6px 0 0" }}>
+            <h2 className="section-title" style={{ margin: "6px 0 0", textAlign: "center" }}>
               Our Office &amp; Fabrication Workshop
             </h2>
           </div>
 
-          <div className="cards" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 28 }}>
+          <div className="cards" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
             <a
               className="map-card card clickable"
               href={business.officeMapUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Get directions to Sparsh Trading Office on Google Maps"
-              style={{ borderTop: "3px solid var(--red-2)" }}
+              style={{ borderRadius: 12, border: "1px solid var(--border)", padding: "24px 22px" }}
             >
               <div>
-                <span className="eyebrow" style={{ color: "var(--red-2)" }}>🏢 Main Office &amp; Consultation</span>
-                <h3 style={{ margin: "8px 0 10px" }}>Sparsh Trading Office</h3>
-                <p style={{ color: "var(--text)", fontSize: "0.98rem", margin: 0 }}>{business.office}</p>
+                <span className="eyebrow" style={{ color: "var(--red-2)", fontSize: "0.74rem" }}>Main Office &amp; Consultation</span>
+                <h3 style={{ margin: "6px 0 8px", fontSize: "1.15rem", fontWeight: 700, color: "var(--strong)" }}>Sparsh Trading Office</h3>
+                <p style={{ color: "var(--text)", fontSize: "0.92rem", margin: 0 }}>{business.office}</p>
               </div>
-              <span className="btn primary" style={{ alignSelf: "flex-start", marginTop: 20 }}>
-                Open Office in Google Maps →
+              <span className="btn primary" style={{ alignSelf: "flex-start", marginTop: 18, fontSize: "0.88rem", borderRadius: 6 }}>
+                Open in Google Maps →
               </span>
             </a>
 
@@ -425,15 +430,15 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Get directions to Sparsh Trading Workshop on Google Maps"
-              style={{ borderTop: "3px solid var(--red-2)" }}
+              style={{ borderRadius: 12, border: "1px solid var(--border)", padding: "24px 22px" }}
             >
               <div>
-                <span className="eyebrow" style={{ color: "var(--red-2)" }}>⚙️ Heavy Fabrication Workshop</span>
-                <h3 style={{ margin: "8px 0 10px" }}>Sparsh Trading Workshop</h3>
-                <p style={{ color: "var(--text)", fontSize: "0.98rem", margin: 0 }}>{business.workshop}</p>
+                <span className="eyebrow" style={{ color: "var(--red-2)", fontSize: "0.74rem" }}>Heavy Fabrication Workshop</span>
+                <h3 style={{ margin: "6px 0 8px", fontSize: "1.15rem", fontWeight: 700, color: "var(--strong)" }}>Sparsh Trading Workshop</h3>
+                <p style={{ color: "var(--text)", fontSize: "0.92rem", margin: 0 }}>{business.workshop}</p>
               </div>
-              <span className="btn primary" style={{ alignSelf: "flex-start", marginTop: 20 }}>
-                Open Workshop in Google Maps →
+              <span className="btn primary" style={{ alignSelf: "flex-start", marginTop: 18, fontSize: "0.88rem", borderRadius: 6 }}>
+                Open in Google Maps →
               </span>
             </a>
           </div>
@@ -443,20 +448,20 @@ export default function Home() {
       {/* Final CTA Banner */}
       <section className="section">
         <div className="wrap" style={{ textAlign: "center" }}>
-          <h2 className="display big-title" style={{ margin: "0 auto 12px", maxWidth: 800 }}>
+          <h2 className="section-title" style={{ margin: "0 auto 12px", maxWidth: 800, textAlign: "center" }}>
             Let's Build Something Strong.
           </h2>
-          <p className="section-lead" style={{ maxWidth: 680, margin: "0 auto 28px" }}>
+          <p className="section-lead" style={{ maxWidth: 680, margin: "0 auto 24px" }}>
             Contact our Pratapgarh workshop and office today for reliable steel fabrication, uPVC systems, glass railings, and customized interior designs.
           </p>
-          <div className="actions" style={{ justifyContent: "center", gap: 16 }}>
-            <a className="btn primary" href={`tel:${business.phones[0]}`} style={{ padding: "14px 28px" }}>
+          <div className="actions" style={{ justifyContent: "center", gap: 12 }}>
+            <a className="btn primary" href={`tel:${business.phones[0]}`} style={{ padding: "12px 24px", borderRadius: 8, fontSize: "0.92rem" }}>
               Call +91 {business.phones[0]}
             </a>
-            <a className="btn whatsapp-action" href={`https://wa.me/${business.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ padding: "14px 28px" }}>
-              💬 Chat on WhatsApp
+            <a className="btn whatsapp-action" href={`https://wa.me/${business.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ padding: "12px 24px", borderRadius: 8, fontSize: "0.92rem" }}>
+              Chat on WhatsApp
             </a>
-            <Link className="btn" href="/contact" style={{ padding: "14px 28px", borderColor: "var(--red-2)" }}>
+            <Link className="btn" href="/contact" style={{ padding: "12px 24px", borderRadius: 8, fontSize: "0.92rem" }}>
               Send Project Enquiry
             </Link>
           </div>

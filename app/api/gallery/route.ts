@@ -1,6 +1,6 @@
 import { connectDB } from "@/lib/db";
-import { requireUser } from "@/lib/auth";
-import { ok, handleError } from "@/lib/api";
+import { requireApiAuth } from "@/lib/auth";
+import { ok, fail, handleError, verifyAllowedOrigin } from "@/lib/api";
 import { GalleryItem } from "@/models/Core";
 
 export async function GET() {
@@ -22,13 +22,17 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const db = await connectDB();
-    await requireUser(["SUPER_ADMIN", "ADMIN"]);
-    if (db) {
-      return ok({ gallery: await GalleryItem.insertMany(await request.json()) });
+    if (!verifyAllowedOrigin(request)) {
+      return fail("Cross-origin request blocked.", 403);
     }
-    return ok({ gallery: await request.json() });
+    const db = await connectDB();
+    await requireApiAuth(["SUPER_ADMIN", "ADMIN"]);
+    const body = await request.json();
+    if (db) {
+      return ok({ gallery: await GalleryItem.insertMany(body) });
+    }
+    return ok({ gallery: body });
   } catch (error) {
     return handleError(error);
   }
-}
+}

@@ -1,22 +1,24 @@
 import { z } from "zod";
 import { connectDB } from "@/lib/db";
-import { getSession } from "@/lib/auth";
-import { ok, handleError } from "@/lib/api";
+import { getSession, requireApiAuth } from "@/lib/auth";
+import { ok, fail, handleError, ApiError, verifyAllowedOrigin } from "@/lib/api";
 import { Enquiry, ActivityLog, Notification } from "@/models/Core";
 import { sendOwnerEnquiryEmail } from "@/lib/mail";
+import { sendWhatsAppServerNotification } from "@/lib/whatsapp";
 import { fallbackStore } from "@/lib/offlineStore";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 const schema = z.object({
-  name: z.string().min(2),
-  phone: z.string().min(10),
+  name: z.string().min(2).max(100),
+  phone: z.string().min(10).max(15).regex(/^[0-9+ -]+$/, "Invalid phone number format"),
   email: z.string().email().optional().or(z.literal("")),
-  location: z.string().optional(),
-  service: z.string().min(2),
-  requirement: z.string().optional(),
-  dimensions: z.string().optional(),
-  budgetRange: z.string().optional(),
-  preferredContactMethod: z.string().optional(),
-  message: z.string().optional(),
+  location: z.string().max(150).optional(),
+  service: z.string().min(2).max(100),
+  requirement: z.string().max(1000).optional(),
+  dimensions: z.string().max(200).optional(),
+  budgetRange: z.string().max(100).optional(),
+  preferredContactMethod: z.string().max(50).optional(),
+  message: z.string().max(2000).optional(),
   uploads: z.array(z.object({ url: z.string(), name: z.string(), type: z.string(), size: z.number() })).optional()
 });
 
@@ -28,13 +30,23 @@ function generateFallbackEnquiryId() {
 
 export async function POST(request: Request) {
   try {
+    if (!verifyAllowedOrigin(request)) {
+      return fail("Cross-origin request blocked.", 403);
+    }
+
+    const clientIp = getClientIp(request);
+    const rateCheck = checkRateLimit(`enquiry_${clientIp}`, { limit: 10, windowMs: 10 * 60 * 1000 });
+    if (!rateCheck.allowed) {
+      return fail("Too many enquiry requests from this network. Please try again later.", 429);
+    }
+
     const rawBody = await request.json();
     const body = schema.parse(rawBody);
     const session = await getSession().catch(() => null);
     
     let enquiryId = generateFallbackEnquiryId();
 
-    // 1. Always save in fallback persistent store
+    // 1. Save in fallback persistent store
     try {
       fallbackStore.saveEnquiry({
         enquiryId,
@@ -110,9 +122,29 @@ export async function POST(request: Request) {
       console.warn("Email dispatch note:", mailErr);
     }
 
+    // 4. Dispatch automated WhatsApp notification
+    let whatsappStatus = "pending";
+    try {
+      const waResult = await sendWhatsAppServerNotification({
+        enquiryId,
+        name: body.name,
+        phone: body.phone,
+        email: body.email,
+        location: body.location,
+        service: body.service,
+        requirement: body.requirement,
+        dimensions: body.dimensions,
+        message: body.message
+      });
+      whatsappStatus = waResult.success ? waResult.provider : "error";
+    } catch (waErr) {
+      console.warn("WhatsApp server dispatch note:", waErr);
+    }
+
     return ok({
       enquiryId,
       emailStatus,
+      whatsappStatus,
       message: "Enquiry submitted successfully! Our team will contact you shortly."
     });
 
@@ -123,21 +155,22 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const session = await getSession().catch(() => null);
+    const session = await requireApiAuth(["SUPER_ADMIN", "ADMIN", "STAFF", "CUSTOMER"]);
+    const isCustomer = session.role === "CUSTOMER";
+
     const db = await connectDB();
     if (db) {
       try {
-        const query = session?.role === "CUSTOMER" ? { customer: session.id } : {};
+        const query = isCustomer ? { customer: session.id } : {};
         const enquiries = await Enquiry.find(query).sort({ createdAt: -1 }).limit(100).lean();
         return ok({ enquiries });
       } catch {
         // Fallback to local store
       }
     }
-    const enquiries = fallbackStore.getEnquiries(session?.role === "CUSTOMER" ? session.id : undefined);
+    const enquiries = fallbackStore.getEnquiries(isCustomer ? session.id : undefined);
     return ok({ enquiries });
   } catch (error) {
     return handleError(error);
   }
 }
-

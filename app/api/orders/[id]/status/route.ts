@@ -1,12 +1,15 @@
 import { connectDB } from "@/lib/db";
-import { requireUser } from "@/lib/auth";
-import { ok, handleError, fail } from "@/lib/api";
+import { requireApiAuth } from "@/lib/auth";
+import { ok, handleError, fail, verifyAllowedOrigin } from "@/lib/api";
 import { Order, OrderStatusHistory, ActivityLog, Notification } from "@/models/Core";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    if (!verifyAllowedOrigin(request)) {
+      return fail("Cross-origin request blocked.", 403);
+    }
     await connectDB();
-    const user = await requireUser(["SUPER_ADMIN", "ADMIN", "STAFF"]);
+    const user = await requireApiAuth(["SUPER_ADMIN", "ADMIN", "STAFF"]);
     const { id } = await params;
     const { status, note, attachment } = await request.json();
     const order = await Order.findByIdAndUpdate(id, { currentStatus: status }, { new: true });

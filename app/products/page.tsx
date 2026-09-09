@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { detailedProducts } from "@/lib/productsCatalogueData";
 import { ArrowRightIcon } from "@/components/Icons";
 
@@ -122,11 +123,12 @@ export default function ProductsPage() {
               >
                 <Link href={`/products/${p.slug}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
                   <div style={{ aspectRatio: "16/9", overflow: "hidden", position: "relative", background: "#111" }}>
-                    <img
+                    <Image
                       src={p.image}
                       alt={p.name}
-                      loading="lazy"
-                      style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s ease" }}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      style={{ objectFit: "cover", transition: "transform 0.3s ease" }}
                     />
                     <span
                       style={{

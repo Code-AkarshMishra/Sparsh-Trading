@@ -24,9 +24,9 @@ export default function Home() {
   ];
 
   const featuredProjects = [
-    { title: "Heavy Steel Entrance Gates & Grills", category: "Structural Steel", desc: "Heavy main gates with CNC laser patterns, anti-rust primer finish, and motor bracket support." },
-    { title: "Soundproof uPVC & Aluminium Windows", category: "Windows & Doors", desc: "Dual & triple track sliding windows with acoustic insulation, dust seals, and SS mosquito mesh." },
-    { title: "Frameless Toughened Glass Railings", category: "Balustrades & Railings", desc: "12mm safety glass with SS 304 mirror spigots and modern stainless handrails for balconies and stairs." }
+    { title: "Heavy Steel Entrance Gates & Grills", category: "Structural Steel", desc: "Heavy main gates with CNC laser patterns, anti-rust primer finish, and motor bracket support.", slug: "meera-bhawan-steel-main-gate" },
+    { title: "Soundproof uPVC & Aluminium Windows", category: "Windows & Doors", desc: "Dual & triple track sliding windows with acoustic insulation, dust seals, and SS mosquito mesh.", slug: "ajeet-nagar-soundproof-upvc-windows" },
+    { title: "Frameless Toughened Glass Railings", category: "Balustrades & Railings", desc: "12mm safety glass with SS 304 mirror spigots and modern stainless handrails for balconies and stairs.", slug: "katra-road-toughened-glass-railing" }
   ];
 
   return (
@@ -51,6 +51,7 @@ export default function Home() {
           loop
           playsInline
           preload="metadata"
+          poster="/brand-wordmark.png"
           aria-label="SPARSH TRADING steel fabrication and uPVC workshop in Pratapgarh"
         />
         <div className="hero-video-overlay" />
@@ -243,7 +244,7 @@ export default function Home() {
           <MobileSwipeableContainer autoSlideInterval={3500} gridClassName="cards project-teasers">
             {featuredProjects.map((item) => (
               <Link
-                href="/projects"
+                href={`/projects/${item.slug}`}
                 className="card project-teaser-card clickable"
                 key={item.title}
                 aria-label={`View project details for ${item.title}`}
@@ -266,7 +267,7 @@ export default function Home() {
                   <p className="muted" style={{ fontSize: "0.92rem", lineHeight: 1.55, margin: 0 }}>{item.desc}</p>
                 </div>
                 <span className="text-link" style={{ marginTop: 20, color: "var(--red-2)", fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 6 }}>
-                  View projects →
+                  View project details →
                 </span>
               </Link>
             ))}

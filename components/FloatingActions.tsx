@@ -16,6 +16,18 @@ export function FloatingActions() {
     return () => clearTimeout(t);
   }, []);
 
+  // BUG-019: Handle Escape key to dismiss the open chatbot window
+  useEffect(() => {
+    if (!expanded) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setExpanded(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [expanded]);
+
   const call = `tel:${business.phones[0]}`;
   const wa = `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(
     "Hello Sparsh Trading, I want to inquire about custom metal fabrication / uPVC windows / modular kitchen services."
@@ -56,16 +68,21 @@ export function FloatingActions() {
         </div>
       )}
 
-      {/* Expanded Chatbot Window */}
+      {/* Expanded Chatbot Window - BUG-019 Accessible Dialog */}
       {expanded && (
-        <div className="popup-card chatbot-window card" role="dialog" aria-modal="false">
+        <div
+          className="popup-card chatbot-window card"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="chatbot-heading"
+        >
           <div className="popup-header" style={{ background: "linear-gradient(135deg, #d92d20 0%, #b82117 100%)", color: "#ffffff", padding: "14px 16px", borderRadius: "10px 10px 0 0", margin: "-20px -20px 14px" }}>
             <div className="popup-brand">
               <div style={{ width: 34, height: 34, borderRadius: "50%", background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", color: "#d92d20", fontWeight: 900, fontSize: "1rem" }}>
                 ST
               </div>
               <div>
-                <strong style={{ color: "#ffffff", fontSize: "0.95rem" }}>Sparsh Quick Assistant</strong>
+                <strong id="chatbot-heading" style={{ color: "#ffffff", fontSize: "0.95rem" }}>Sparsh Quick Assistant</strong>
                 <span style={{ display: "block", fontSize: "0.72rem", color: "rgba(255,255,255,0.85)" }}>
                   Online • Pratapgarh, UP
                 </span>

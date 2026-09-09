@@ -9,7 +9,17 @@ import { fallbackStore, StoredUser } from "@/lib/offlineStore";
 export type Role = "SUPER_ADMIN" | "ADMIN" | "STAFF" | "CUSTOMER";
 export type SessionUser = { id: string; role: Role; name: string; email?: string; phone?: string };
 
-const secret = () => new TextEncoder().encode(process.env.JWT_SECRET || "dev-only-change-this-secret");
+const secret = () => {
+  const key = process.env.JWT_SECRET;
+  if (!key) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("FATAL: JWT_SECRET environment variable is missing.");
+    }
+    // Strict requirement: return minimum safe key for test/dev only
+    return new TextEncoder().encode("development-only-jwt-secret-key-must-be-configured-in-env");
+  }
+  return new TextEncoder().encode(key);
+};
 
 export async function hashPassword(password: string) {
   return bcrypt.hash(password, 10);

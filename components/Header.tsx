@@ -172,6 +172,7 @@ export function Header() {
           className="theme-toggle"
           type="button"
           onClick={toggleTheme}
+          aria-pressed={dark}
           aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
           title={dark ? "Switch to light mode" : "Switch to dark mode"}
         >

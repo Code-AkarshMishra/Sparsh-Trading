@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     "Tata Steel Chaukhat Prayagraj",
     "Fabrication Workshop UP"
   ],
-  metadataBase: new URL(process.env.APP_URL || "https://sparshtrading.shop"),
+  metadataBase: new URL(process.env.APP_URL || "https://www.sparshtrading.shop"),
   icons: {
     icon: "/brand-logo.png",
     shortcut: "/brand-logo.png",
@@ -34,17 +34,17 @@ export const metadata: Metadata = {
     title: "SPARSH TRADING | #1 Steel Fabrication, uPVC Windows & Kitchens in UP",
     description:
       "Architectural metal fabrication, soundproof uPVC windows, glass railings, PPGI frames & modular kitchens in Pratapgarh & UP. Call +91 8795662161 / +91 7007710096.",
-    url: "https://sparshtrading.shop",
+    url: "https://www.sparshtrading.shop",
     siteName: "Sparsh Trading",
     images: [
       {
-        url: "https://sparshtrading.shop/brand-wordmark.png",
+        url: "https://www.sparshtrading.shop/brand-wordmark.png",
         width: 1200,
         height: 630,
         alt: "SPARSH TRADING - Architectural Metal & Interior Solutions"
       },
       {
-        url: "https://sparshtrading.shop/brand-logo.png",
+        url: "https://www.sparshtrading.shop/brand-logo.png",
         width: 512,
         height: 512,
         alt: "SPARSH TRADING Logo"
@@ -57,12 +57,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SPARSH TRADING | Steel Fabrication & Windows in UP",
     description: "Custom steel fabrication, uPVC systems, glass railings & modular kitchens in Pratapgarh, UP.",
-    images: ["https://sparshtrading.shop/brand-wordmark.png"]
+    images: ["https://www.sparshtrading.shop/brand-wordmark.png"]
   },
   alternates: {
-    canonical: "https://sparshtrading.shop",
+    canonical: "https://www.sparshtrading.shop",
     languages: {
-      "en-IN": "https://sparshtrading.shop",
+      "en-IN": "https://www.sparshtrading.shop",
       "x-default": "https://www.sparshtrading.shop"
     }
   },
@@ -115,7 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       "Ayodhya",
       "Uttar Pradesh"
     ],
-    url: process.env.APP_URL || "https://sparshtrading.shop",
+    url: process.env.APP_URL || "https://www.sparshtrading.shop",
     sameAs: [
       "https://www.sparshtrading.shop",
       "https://sparshtrading.shop"
@@ -131,9 +131,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
+        {/* BUG-010: Skip navigation link for WCAG 2.4.1 */}
+        <a href="#main-content" className="skip-link">Skip to main content</a>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         <Header />
-        {children}
+        <div id="main-content">
+          {children}
+        </div>
         <Footer />
         <FloatingActions />
       </body>

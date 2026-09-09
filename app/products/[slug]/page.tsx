@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { detailedProducts, getProductBySlug } from "@/lib/productsCatalogueData";
 import { business } from "@/lib/business";
@@ -17,7 +18,7 @@ export async function generateMetadata({
   const product = getProductBySlug(slug);
   if (!product) return {};
 
-  const baseUrl = process.env.APP_URL || "https://sparshtrading.shop";
+  const baseUrl = process.env.APP_URL || "https://www.sparshtrading.shop";
   const url = `${baseUrl}/products/${product.slug}`;
 
   return {
@@ -61,7 +62,7 @@ export default async function ProductDetailPage({
   const product = getProductBySlug(slug);
   if (!product) notFound();
 
-  const baseUrl = process.env.APP_URL || "https://sparshtrading.shop";
+  const baseUrl = process.env.APP_URL || "https://www.sparshtrading.shop";
 
   // Product Schema
   const productSchema = {
@@ -182,10 +183,13 @@ export default async function ProductDetailPage({
                 background: "#111"
               }}
             >
-              <img
+              <Image
                 src={product.image}
                 alt={`${product.name} manufactured by Sparsh Trading in Pratapgarh UP`}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 50vw"
+                style={{ objectFit: "cover" }}
               />
               <span
                 style={{
@@ -217,10 +221,17 @@ export default async function ProductDetailPage({
                       borderRadius: 8,
                       overflow: "hidden",
                       border: "1px solid var(--border)",
-                      flexShrink: 0
+                      flexShrink: 0,
+                      position: "relative"
                     }}
                   >
-                    <img src={img} alt={`Showcase photo ${i + 1} for ${product.name}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <Image
+                      src={img}
+                      alt={`Showcase photo ${i + 1} for ${product.name}`}
+                      fill
+                      sizes="80px"
+                      style={{ objectFit: "cover" }}
+                    />
                   </div>
                 ))}
               </div>

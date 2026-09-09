@@ -118,7 +118,17 @@ export function Footer() {
       </div>
 
       <div className="wrap footer-bottom" style={{ borderTop: "1px solid var(--border)", paddingTop: 16, marginTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, fontSize: "0.82rem" }}>
-        <span>© {new Date().getFullYear()} {business.name} • GSTIN: <strong>{business.gstin}</strong></span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <span>© {new Date().getFullYear()} {business.name} • GSTIN: <strong>{business.gstin}</strong></span>
+          <span style={{ color: "var(--border)" }}>•</span>
+          <Link href="/privacy-policy" style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            Privacy Policy
+          </Link>
+          <span style={{ color: "var(--border)" }}>•</span>
+          <Link href="/terms" style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            Terms of Service
+          </Link>
+        </div>
         <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           <span style={{ color: "var(--muted)" }}>Serving {business.serviceArea}</span>
           <span style={{ color: "var(--border)" }}>•</span>

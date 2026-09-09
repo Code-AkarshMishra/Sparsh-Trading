@@ -6,7 +6,16 @@ import { Enquiry, ActivityLog, Notification } from "@/models/Core";
 import { sendOwnerEnquiryEmail } from "@/lib/mail";
 import { sendWhatsAppServerNotification } from "@/lib/whatsapp";
 import { fallbackStore } from "@/lib/offlineStore";
-import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+import { checkRateLimitAsync, getClientIp } from "@/lib/rateLimit";
+
+function escapeHtml(str: string = ""): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 const schema = z.object({
   name: z.string().min(2).max(100),
@@ -35,7 +44,7 @@ export async function POST(request: Request) {
     }
 
     const clientIp = getClientIp(request);
-    const rateCheck = checkRateLimit(`enquiry_${clientIp}`, { limit: 10, windowMs: 10 * 60 * 1000 });
+    const rateCheck = await checkRateLimitAsync(`enquiry_${clientIp}`, { limit: 10, windowMs: 10 * 60 * 1000 });
     if (!rateCheck.allowed) {
       return fail("Too many enquiry requests from this network. Please try again later.", 429);
     }
@@ -94,17 +103,26 @@ export async function POST(request: Request) {
     }
 
     // 3. Dispatch email notification with await (Essential for Vercel serverless execution)
+    // BUG-017: Sanitize all user inputs before rendering into HTML email template
+    const safeEnquiryId = escapeHtml(enquiryId);
+    const safeName = escapeHtml(body.name);
+    const safePhone = escapeHtml(body.phone);
+    const safeService = escapeHtml(body.service);
+    const safeLocation = escapeHtml(body.location || "Not specified");
+    const safeRequirement = escapeHtml(body.requirement || "None");
+    const safeMessage = escapeHtml(body.message || "None");
+
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #d92d20; border-radius: 8px;">
         <h2 style="color: #d92d20; margin-top: 0;">New Sparsh Trading Website Enquiry</h2>
         <table style="width: 100%; border-collapse: collapse;">
-          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Reference ID:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${enquiryId}</td></tr>
-          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Customer Name:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${body.name}</td></tr>
-          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Phone Number:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;"><a href="tel:${body.phone}">+91 ${body.phone}</a></td></tr>
-          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Service Required:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${body.service}</td></tr>
-          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Location / Area:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${body.location || "Not specified"}</td></tr>
-          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Requirement Details:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${body.requirement || "None"}</td></tr>
-          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Additional Message:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${body.message || "None"}</td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Reference ID:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${safeEnquiryId}</td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Customer Name:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${safeName}</td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Phone Number:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;"><a href="tel:${safePhone}">+91 ${safePhone}</a></td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Service Required:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${safeService}</td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Location / Area:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${safeLocation}</td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Requirement Details:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${safeRequirement}</td></tr>
+          <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Additional Message:</strong></td><td style="padding: 8px; border-bottom: 1px solid #eee;">${safeMessage}</td></tr>
         </table>
         <p style="font-size: 0.85rem; color: #666; margin-top: 18px;">Submitted on ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
       </div>

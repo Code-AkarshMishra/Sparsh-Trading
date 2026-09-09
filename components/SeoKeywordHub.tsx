@@ -70,6 +70,9 @@ export function SeoKeywordHub() {
             <div
               key={faq.q}
               className="card"
+              role="button"
+              tabIndex={0}
+              aria-expanded={expandedFaq === idx}
               style={{
                 padding: "18px 22px",
                 cursor: "pointer",
@@ -77,15 +80,22 @@ export function SeoKeywordHub() {
                 border: "1px solid var(--border)",
                 borderLeft: expandedFaq === idx ? "4px solid var(--red-2)" : "1px solid var(--border)",
                 background: expandedFaq === idx ? "var(--surface-2)" : "var(--surface)",
-                transition: "all 0.2s ease"
+                transition: "all 0.2s ease",
+                outline: "none"
               }}
               onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setExpandedFaq(expandedFaq === idx ? null : idx);
+                }
+              }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
                 <h3 style={{ margin: 0, fontSize: "1.05rem", color: "var(--strong)", fontWeight: 600, lineHeight: 1.4 }}>
                   {faq.q}
                 </h3>
-                <span style={{ color: "var(--red-2)", fontSize: "1.3rem", fontWeight: 700, minWidth: 20, textAlign: "center" }}>
+                <span aria-hidden="true" style={{ color: "var(--red-2)", fontSize: "1.3rem", fontWeight: 700, minWidth: 20, textAlign: "center" }}>
                   {expandedFaq === idx ? "−" : "+"}
                 </span>
               </div>

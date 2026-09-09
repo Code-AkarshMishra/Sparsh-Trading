@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useState, useRef, useCallback, FormEvent } from "react";
 import { BrandImage } from "@/components/BrandImage";
 import { MobileSwipeableContainer } from "@/components/MobileSwipeableContainer";
 
@@ -168,7 +168,7 @@ export function ReviewsSection() {
                       fontWeight: 700
                     }}
                   >
-                    ✓ Verified Project
+                    ★ Customer Review
                   </span>
                 </div>
 
@@ -197,88 +197,171 @@ export function ReviewsSection() {
 
         {/* Review Modal */}
         {modalOpen && (
-          <div
-            className="lightbox-modal"
-            onClick={() => setModalOpen(false)}
-            role="dialog"
-            aria-modal="true"
-          >
-            <div
-              className="lightbox-content card"
-              onClick={(e) => e.stopPropagation()}
-              style={{ maxWidth: 520, padding: 32, background: "var(--surface)" }}
-            >
-              <button
-                className="lightbox-close"
-                type="button"
-                onClick={() => setModalOpen(false)}
-                aria-label="Close"
-              >
-                ✕
-              </button>
-
-              <span className="eyebrow" style={{ color: "var(--red-2)" }}>Share Your Feedback</span>
-              <h2 className="display" style={{ fontSize: "1.6rem", margin: "6px 0 16px" }}>
-                Add Your Review
-              </h2>
-
-              <form onSubmit={submitReview} className="form" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                <label>
-                  Your Name *
-                  <input name="customerName" required placeholder="e.g. Ramesh Kumar" />
-                </label>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  <label>
-                    Location
-                    <input name="location" placeholder="e.g. Pratapgarh, Civil Lines" />
-                  </label>
-                  <label>
-                    Rating
-                    <select
-                      value={rating}
-                      onChange={(e) => setRating(Number(e.target.value))}
-                      style={{ height: 44 }}
-                    >
-                      <option value={5}>★★★★★ (5 Stars)</option>
-                      <option value={4}>★★★★☆ (4 Stars)</option>
-                      <option value={3}>★★★☆☆ (3 Stars)</option>
-                      <option value={2}>★★☆☆☆ (2 Stars)</option>
-                      <option value={1}>★☆☆☆☆ (1 Star)</option>
-                    </select>
-                  </label>
-                </div>
-
-                <label>
-                  Project Fabricated *
-                  <input name="projectType" required placeholder="e.g. Modular Kitchen / Main Gate / uPVC Windows" />
-                </label>
-
-                <label>
-                  Your Review / Experience *
-                  <textarea
-                    name="text"
-                    required
-                    minLength={10}
-                    rows={4}
-                    placeholder="Tell us about the finishing, material quality, and installation experience..."
-                  />
-                </label>
-
-                <button className="btn primary" type="submit" disabled={submitting} style={{ marginTop: 6 }}>
-                  {submitting ? "Submitting Review..." : "Submit Review"}
-                </button>
-
-                {statusMsg && (
-                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--red-2)", fontWeight: 700 }}>
-                    {statusMsg}
-                  </p>
-                )}
-              </form>
-            </div>
-          </div>
+          <ReviewModal
+            onClose={() => setModalOpen(false)}
+            onSubmit={submitReview}
+            submitting={submitting}
+            statusMsg={statusMsg}
+            rating={rating}
+            setRating={setRating}
+          />
         )}
       </div>
     </section>
+  );
+}
+
+/** BUG-016: Review modal with proper focus trap */
+function ReviewModal({
+  onClose,
+  onSubmit,
+  submitting,
+  statusMsg,
+  rating,
+  setRating
+}: {
+  onClose: () => void;
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  submitting: boolean;
+  statusMsg: string;
+  rating: number;
+  setRating: (r: number) => void;
+}) {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  // Save previous focus and focus the modal on mount
+  useEffect(() => {
+    previousFocusRef.current = document.activeElement as HTMLElement;
+    // Focus the close button when modal opens
+    const closeBtn = modalRef.current?.querySelector<HTMLButtonElement>(".lightbox-close");
+    closeBtn?.focus();
+
+    return () => {
+      // Restore focus when modal closes
+      previousFocusRef.current?.focus();
+    };
+  }, []);
+
+  // Handle Escape key
+  useEffect(() => {
+    function handleEsc(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", handleEsc);
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [onClose]);
+
+  // Focus trap
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key !== "Tab") return;
+    const modal = modalRef.current;
+    if (!modal) return;
+
+    const focusable = modal.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }, []);
+
+  return (
+    <div
+      className="lightbox-modal"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Write a review"
+      onKeyDown={handleKeyDown}
+    >
+      <div
+        ref={modalRef}
+        className="lightbox-content card"
+        onClick={(e) => e.stopPropagation()}
+        style={{ maxWidth: 520, padding: 32, background: "var(--surface)" }}
+      >
+        <button
+          className="lightbox-close"
+          type="button"
+          onClick={onClose}
+          aria-label="Close review form"
+        >
+          ✕
+        </button>
+
+        <span className="eyebrow" style={{ color: "var(--red-2)" }}>Share Your Feedback</span>
+        <h2 className="display" style={{ fontSize: "1.6rem", margin: "6px 0 16px" }}>
+          Add Your Review
+        </h2>
+
+        <form onSubmit={onSubmit} className="form" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <label>
+            Your Name *
+            <input name="customerName" required placeholder="e.g. Ramesh Kumar" />
+          </label>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <label>
+              Location
+              <input name="location" placeholder="e.g. Pratapgarh, Civil Lines" />
+            </label>
+            <label>
+              Rating
+              <select
+                value={rating}
+                onChange={(e) => setRating(Number(e.target.value))}
+                style={{ height: 44 }}
+              >
+                <option value={5}>★★★★★ (5 Stars)</option>
+                <option value={4}>★★★★☆ (4 Stars)</option>
+                <option value={3}>★★★☆☆ (3 Stars)</option>
+                <option value={2}>★★☆☆☆ (2 Stars)</option>
+                <option value={1}>★☆☆☆☆ (1 Star)</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            Project Fabricated *
+            <input name="projectType" required placeholder="e.g. Modular Kitchen / Main Gate / uPVC Windows" />
+          </label>
+
+          <label>
+            Your Review / Experience *
+            <textarea
+              name="text"
+              required
+              minLength={10}
+              rows={4}
+              placeholder="Tell us about the finishing, material quality, and installation experience..."
+            />
+          </label>
+
+          <button className="btn primary" type="submit" disabled={submitting} style={{ marginTop: 6 }}>
+            {submitting ? "Submitting Review..." : "Submit Review"}
+          </button>
+
+          {statusMsg && (
+            <p role="status" style={{ margin: 0, fontSize: "0.9rem", color: "var(--red-2)", fontWeight: 700 }}>
+              {statusMsg}
+            </p>
+          )}
+        </form>
+      </div>
+    </div>
   );
 }

@@ -27,6 +27,8 @@ export function EnquiryForm({ className = "" }: { className?: string }) {
   const [requirement, setRequirement] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
   const [autoOpenWhatsApp, setAutoOpenWhatsApp] = useState(true);
+  const [honeypot, setHoneypot] = useState("");
+  const [formLoadTime] = useState(Date.now());
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -43,6 +45,20 @@ export function EnquiryForm({ className = "" }: { className?: string }) {
   }, []);
 
   async function submitForm(openWhatsAppNow: boolean) {
+    // BUG-013: Anti-spam checks
+    if (honeypot) {
+      // Bot filled the honeypot field — silently pretend success
+      setState("success");
+      setMessage("Thank you! Your enquiry has been submitted.");
+      return;
+    }
+    if (Date.now() - formLoadTime < 3000) {
+      // Form filled in under 3 seconds — likely a bot
+      setState("error");
+      setMessage("Please wait a moment before submitting.");
+      return;
+    }
+
     setState("loading");
     setMessage("Processing your enquiry...");
 
@@ -99,11 +115,27 @@ export function EnquiryForm({ className = "" }: { className?: string }) {
       setMessage("Please enter your Name and Mobile Number first.");
       return;
     }
+    if (!/^[6-9][0-9]{9}$/.test(phone.replace(/[\s-]/g, ""))) {
+      setState("error");
+      setMessage("Please enter a valid 10-digit Indian mobile number starting with 6-9.");
+      return;
+    }
     submitForm(true);
   }
 
   return (
     <form className={`form card ${className}`.trim()} onSubmit={handleSubmit} aria-label="Request a quote form" style={{ borderTop: "3px solid var(--red-2)" }}>
+      {/* BUG-013: Honeypot anti-bot field */}
+      <div style={{ position: "absolute", left: "-9999px", height: 0, overflow: "hidden" }} aria-hidden="true">
+        <input
+          name="website_url"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+        />
+      </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span className="brand-dot-pulse" />
@@ -134,11 +166,15 @@ export function EnquiryForm({ className = "" }: { className?: string }) {
           Mobile Number *
           <input
             name="phone"
+            type="tel"
             required
             minLength={10}
+            maxLength={10}
+            pattern="[6-9][0-9]{9}"
+            title="Please enter a valid 10-digit Indian mobile number starting with 6-9"
             inputMode="tel"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, "").slice(0, 10))}
             placeholder="10-digit Mobile Number"
           />
         </label>

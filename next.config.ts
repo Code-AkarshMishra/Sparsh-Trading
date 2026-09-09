@@ -29,16 +29,16 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: `
       default-src 'self';
-      script-src 'self' 'unsafe-eval' 'unsafe-inline';
+      script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""};
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       img-src 'self' blob: data: https:;
       font-src 'self' https://fonts.gstatic.com data:;
       media-src 'self' blob: data:;
-      connect-src 'self' https://formsubmit.co;
+      connect-src 'self' https://formsubmit.co https://*.upstash.io https://api.ultramsg.com;
       frame-src 'self' https://www.google.com https://maps.google.com;
       object-src 'none';
       base-uri 'self';
-      form-action 'self';
+      form-action 'self' https://formsubmit.co;
       frame-ancestors 'self';
     `.replace(/\s{2,}/g, " ").trim()
   }

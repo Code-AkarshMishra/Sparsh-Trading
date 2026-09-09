@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createSession, findUserByLogin, verifyPassword } from "@/lib/auth";
 import { ok, fail, handleError, verifyAllowedOrigin } from "@/lib/api";
 import { ActivityLog } from "@/models/Core";
-import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+import { checkRateLimitAsync, getClientIp } from "@/lib/rateLimit";
 
 const schema = z.object({
   login: z.string().min(3).max(100),
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     }
 
     const clientIp = getClientIp(request);
-    const rateCheck = checkRateLimit(`login_${clientIp}`, { limit: 10, windowMs: 5 * 60 * 1000 });
+    const rateCheck = await checkRateLimitAsync(`login_${clientIp}`, { limit: 10, windowMs: 5 * 60 * 1000 });
     if (!rateCheck.allowed) {
       return fail("Too many login attempts. Please try again after 5 minutes.", 429);
     }

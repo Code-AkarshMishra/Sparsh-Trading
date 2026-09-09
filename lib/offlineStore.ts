@@ -77,41 +77,26 @@ function writeJsonFile<T>(filename: string, data: T) {
   }
 }
 
-// Initial Admin & Demo User Seed
-const DEFAULT_HASH = bcrypt.hashSync("admin123", 10);
-const DEFAULT_USERS: StoredUser[] = [
-  {
-    id: "admin-1",
-    name: "Sparsh Trading Admin",
-    phone: "8795662161",
-    email: "mail.sparshtrading@gmail.com",
-    passwordHash: DEFAULT_HASH,
-    role: "SUPER_ADMIN",
-    status: "ACTIVE",
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: "admin-2",
-    name: "Partner Admin",
-    phone: "7007710096",
-    email: "mail.sparshtrading@gmail.com",
-    passwordHash: DEFAULT_HASH,
-    role: "ADMIN",
-    status: "ACTIVE",
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: "cust-1",
-    name: "Akarsh Mishra",
-    phone: "9682043203",
-    email: "akarshmishra3145@gmail.com",
-    passwordHash: bcrypt.hashSync("Akarsh123", 10),
-    role: "CUSTOMER",
-    status: "ACTIVE",
-    address: "Civil Lines, Pratapgarh",
-    createdAt: new Date().toISOString()
+// Initial Admin Seed - Loaded securely from environment variables (Never hardcoded)
+function getDefaultUsers(): StoredUser[] {
+  const adminPassword = process.env.ADMIN_INITIAL_PASSWORD;
+  if (!adminPassword) {
+    return [];
   }
-];
+  const passwordHash = bcrypt.hashSync(adminPassword, 10);
+  return [
+    {
+      id: "admin-1",
+      name: "Sparsh Trading Admin",
+      phone: process.env.ADMIN_INITIAL_PHONE || "8795662161",
+      email: process.env.OWNER_EMAIL || "mail.sparshtrading@gmail.com",
+      passwordHash,
+      role: "SUPER_ADMIN",
+      status: "ACTIVE",
+      createdAt: new Date().toISOString()
+    }
+  ];
+}
 
 const DEFAULT_REVIEWS: StoredReview[] = [
   {
@@ -159,7 +144,7 @@ const DEFAULT_REVIEWS: StoredReview[] = [
 export const fallbackStore = {
   // Users
   getUsers(): StoredUser[] {
-    return readJsonFile<StoredUser[]>("users.json", DEFAULT_USERS);
+    return readJsonFile<StoredUser[]>("users.json", getDefaultUsers());
   },
   findUserByLogin(login: string): StoredUser | null {
     const users = this.getUsers();

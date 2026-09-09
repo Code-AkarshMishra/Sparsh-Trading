@@ -59,6 +59,53 @@ export function checkRateLimit(
   };
 }
 
+/**
+ * Distributed rate limiter for serverless environments (BUG-004)
+ * Uses Upstash Redis REST if configured; gracefully falls back to in-memory store.
+ */
+export async function checkRateLimitAsync(
+  identifier: string,
+  options: RateLimitOptions = { limit: 60, windowMs: 60 * 1000 }
+): Promise<{ allowed: boolean; remaining: number; resetAt: number }> {
+  const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (upstashUrl && upstashToken) {
+    try {
+      const key = `ratelimit:${identifier}`;
+      const res = await fetch(`${upstashUrl}/pipeline`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${upstashToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify([
+          ["INCR", key],
+          ["PEXPIRE", key, options.windowMs, "NX"],
+          ["PTTL", key]
+        ]),
+        cache: "no-store"
+      });
+
+      if (res.ok) {
+        const results = await res.json();
+        const count = typeof results[0]?.result === "number" ? results[0].result : 1;
+        const ttl = typeof results[2]?.result === "number" && results[2].result > 0 ? results[2].result : options.windowMs;
+        const resetAt = Date.now() + ttl;
+        const allowed = count <= options.limit;
+        const remaining = Math.max(0, options.limit - count);
+
+        return { allowed, remaining, resetAt };
+      }
+    } catch (err: any) {
+      console.warn("Upstash Redis rate limit check failed, falling back to memory:", err?.message || err);
+    }
+  }
+
+  // Fallback to in-memory check
+  return checkRateLimit(identifier, options);
+}
+
 export function getClientIp(request: Request): string {
   const xForwardedFor = request.headers.get("x-forwarded-for");
   if (xForwardedFor) {

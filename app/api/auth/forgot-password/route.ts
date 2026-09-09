@@ -5,12 +5,21 @@ import { User } from "@/models/User";
 import { fallbackStore } from "@/lib/offlineStore";
 import { ok, fail, handleError, verifyAllowedOrigin } from "@/lib/api";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
-import { sendOwnerEnquiryEmail } from "@/lib/mail";
+import { sendPasswordResetEmail } from "@/lib/mail";
 
 const schema = z.object({
   login: z.string().min(3).max(100).trim(),
   honeypot: z.string().optional()
 });
+
+function maskEmail(email: string): string {
+  const [user, domain] = email.split("@");
+  if (!domain) return email;
+  if (user.length <= 3) {
+    return `${user[0]}***@${domain}`;
+  }
+  return `${user.slice(0, 2)}${"*".repeat(Math.min(user.length - 3, 5))}${user.slice(-1)}@${domain}`;
+}
 
 export async function POST(request: Request) {
   try {
@@ -61,42 +70,35 @@ export async function POST(request: Request) {
     }
 
     // Also update offline store
-    const offlineSuccess = fallbackStore.setResetToken(body.login, tokenHash, expiresAt.toISOString());
-    if (offlineSuccess) {
+    const offlineUser = fallbackStore.findUserByLogin(body.login);
+    if (offlineUser) {
       accountFound = true;
-      const offlineUser = fallbackStore.findUserByLogin(body.login);
-      targetEmail = targetEmail || offlineUser?.email;
-      userName = userName || offlineUser?.name;
+      targetEmail = targetEmail || offlineUser.email;
+      userName = userName || offlineUser.name;
+      fallbackStore.setResetToken(body.login, tokenHash, expiresAt.toISOString());
     }
 
-    // If email exists, dispatch reset notification
-    if (accountFound && targetEmail) {
-      try {
-        await sendOwnerEnquiryEmail(
-          `Sparsh Trading - One-Time Password Reset Code (${resetToken})`,
-          `
-            <div style="font-family: Arial, sans-serif; max-width: 500px; padding: 20px; border: 1px solid #d92d20; border-radius: 8px;">
-              <h2 style="color: #d92d20; margin-top: 0;">Password Reset Request</h2>
-              <p>Hello ${userName || "User"},</p>
-              <p>We received a request to reset your password for your Sparsh Trading account.</p>
-              <div style="background: #f8f9fa; padding: 16px; text-align: center; border-radius: 6px; margin: 20px 0;">
-                <span style="font-size: 1.8rem; font-weight: 800; letter-spacing: 6px; color: #111;">${resetToken}</span>
-              </div>
-              <p style="font-size: 0.85rem; color: #666;">This one-time code expires in 15 minutes. If you did not request this, you can safely ignore this email.</p>
-            </div>
-          `,
-          { login: body.login }
-        );
-      } catch (mailErr) {
-        console.warn("Reset email dispatch notice:", mailErr);
-      }
+    if (!accountFound) {
+      return fail("No account found with this mobile number or email. Please verify your details or register a new account.", 404);
     }
 
-    // Generic safe response preventing account enumeration, while providing token for verified UX / offline testing
+    if (!targetEmail) {
+      return fail(
+        "No email address is linked to this account for password recovery. Please contact Sparsh Trading support at +91 8795662161 or mail.sparshtrading@gmail.com to update your credentials.",
+        400
+      );
+    }
+
+    // Dispatch verification code directly to the user's registered email
+    const mailResult = await sendPasswordResetEmail(targetEmail, resetToken, userName);
+    if (!mailResult.success) {
+      return fail("Failed to send reset code email. Please check your connection or try again shortly.", 500);
+    }
+
+    const masked = maskEmail(targetEmail);
     return ok({
-      message: "If an active account is registered with this mobile/email, a 15-minute one-time reset code has been issued.",
-      // For immediate authorized testing & offline fallback resilience:
-      devTokenHint: accountFound ? resetToken : undefined
+      message: `A 6-digit verification code has been sent to your registered email (${masked}). Please check your inbox and spam folder.`,
+      maskedEmail: masked
     });
   } catch (error) {
     return handleError(error);

@@ -84,7 +84,7 @@ const DEFAULT_USERS: StoredUser[] = [
     id: "admin-1",
     name: "Sparsh Trading Admin",
     phone: "8795662161",
-    email: "admin@sparshtrading.com",
+    email: "mail.sparshtrading@gmail.com",
     passwordHash: DEFAULT_HASH,
     role: "SUPER_ADMIN",
     status: "ACTIVE",
@@ -94,7 +94,7 @@ const DEFAULT_USERS: StoredUser[] = [
     id: "admin-2",
     name: "Partner Admin",
     phone: "7007710096",
-    email: "partner@sparshtrading.com",
+    email: "mail.sparshtrading@gmail.com",
     passwordHash: DEFAULT_HASH,
     role: "ADMIN",
     status: "ACTIVE",
@@ -103,9 +103,9 @@ const DEFAULT_USERS: StoredUser[] = [
   {
     id: "cust-1",
     name: "Akarsh Mishra",
-    phone: "9876543210",
-    email: "client@sparshtrading.com",
-    passwordHash: bcrypt.hashSync("client123", 10),
+    phone: "9682043203",
+    email: "akarshmishra3145@gmail.com",
+    passwordHash: bcrypt.hashSync("Akarsh123", 10),
     role: "CUSTOMER",
     status: "ACTIVE",
     address: "Civil Lines, Pratapgarh",
@@ -164,7 +164,14 @@ export const fallbackStore = {
   findUserByLogin(login: string): StoredUser | null {
     const users = this.getUsers();
     const l = login.trim().toLowerCase();
-    return users.find((u) => u.phone === login || (u.email && u.email.toLowerCase() === l)) || null;
+    const cleanDigits = l.replace(/\D/g, "");
+    const phone10 = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : "";
+    return users.find((u) => {
+      const uPhone = (u.phone || "").replace(/\D/g, "").slice(-10);
+      const isPhoneMatch = phone10.length === 10 && uPhone === phone10;
+      const isEmailMatch = Boolean(u.email && u.email.toLowerCase() === l);
+      return isPhoneMatch || isEmailMatch;
+    }) || null;
   },
   createUser(data: Omit<StoredUser, "id" | "createdAt">): StoredUser {
     const users = this.getUsers();
@@ -179,26 +186,40 @@ export const fallbackStore = {
   },
   setResetToken(login: string, resetTokenHash: string, expiresAt: string): boolean {
     const users = this.getUsers();
-    const l = login.trim().toLowerCase();
-    const user = users.find((u) => u.phone === login || (u.email && u.email.toLowerCase() === l));
+    const matched = this.findUserByLogin(login);
+    if (!matched) return false;
+    const user = users.find((u) => u.id === matched.id);
     if (!user) return false;
     user.resetTokenHash = resetTokenHash;
     user.resetTokenExpiresAt = expiresAt;
     writeJsonFile("users.json", users);
     return true;
   },
-  updatePasswordWithToken(login: string, tokenHash: string, newPasswordHash: string): boolean {
+  updatePasswordWithToken(
+    login: string,
+    tokenHash: string,
+    newPasswordHash: string
+  ): { success: boolean; reason?: "USER_NOT_FOUND" | "NO_ACTIVE_TOKEN" | "TOKEN_EXPIRED" | "TOKEN_MISMATCH" } {
     const users = this.getUsers();
-    const l = login.trim().toLowerCase();
-    const user = users.find((u) => u.phone === login || (u.email && u.email.toLowerCase() === l));
-    if (!user || !user.resetTokenHash || !user.resetTokenExpiresAt) return false;
-    if (new Date(user.resetTokenExpiresAt).getTime() < Date.now()) return false;
-    if (user.resetTokenHash !== tokenHash) return false;
+    const matched = this.findUserByLogin(login);
+    if (!matched) {
+      return { success: false, reason: "USER_NOT_FOUND" };
+    }
+    const user = users.find((u) => u.id === matched.id);
+    if (!user || !user.resetTokenHash || !user.resetTokenExpiresAt) {
+      return { success: false, reason: "NO_ACTIVE_TOKEN" };
+    }
+    if (new Date(user.resetTokenExpiresAt).getTime() < Date.now()) {
+      return { success: false, reason: "TOKEN_EXPIRED" };
+    }
+    if (user.resetTokenHash !== tokenHash) {
+      return { success: false, reason: "TOKEN_MISMATCH" };
+    }
     user.passwordHash = newPasswordHash;
-    user.resetTokenHash = undefined;
-    user.resetTokenExpiresAt = undefined;
+    delete user.resetTokenHash;
+    delete user.resetTokenExpiresAt;
     writeJsonFile("users.json", users);
-    return true;
+    return { success: true };
   },
   updatePassword(userId: string, newPasswordHash: string): boolean {
     const users = this.getUsers();

@@ -122,8 +122,10 @@ export function AuthForm({ mode, portal = "customer" }: AuthFormProps) {
             <input name="phone" required type="tel" minLength={10} placeholder="e.g. 9876543210" />
           </label>
           <label style={{ display: "block", marginBottom: 14 }}>
-            <span style={{ fontSize: "0.9rem", fontWeight: 700, display: "block", marginBottom: 6 }}>Email Address (Optional)</span>
-            <input name="email" type="email" placeholder="name@example.com" />
+            <span style={{ fontSize: "0.9rem", fontWeight: 700, display: "block", marginBottom: 6 }}>
+              Email Address * <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 500 }}>(Required for OTP & Invoices)</span>
+            </span>
+            <input name="email" type="email" required placeholder="e.g. name@example.com" />
           </label>
           <label style={{ display: "block", marginBottom: 14 }}>
             <span style={{ fontSize: "0.9rem", fontWeight: 700, display: "block", marginBottom: 6 }}>Site / Delivery Location in UP</span>

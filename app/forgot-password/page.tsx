@@ -32,12 +32,10 @@ export default function ForgotPasswordPage() {
       setLoading(false);
       if (res.ok) {
         setMessage({
-          text: data.message || "A 15-minute one-time code has been generated.",
+          text: data.message || "A 15-minute one-time recovery code has been sent to your registered email.",
           type: "success"
         });
-        if (data.data?.devTokenHint) {
-          setToken(data.data.devTokenHint);
-        }
+        setToken("");
         setStep(2);
       } else {
         setMessage({ text: data.message || "Failed to process request. Please try again.", type: "error" });
@@ -57,6 +55,11 @@ export default function ForgotPasswordPage() {
       return setMessage({ text: "Password must be at least 8 characters with letters & numbers.", type: "error" });
     }
 
+    const cleanToken = token.replace(/\D/g, "");
+    if (cleanToken.length !== 6) {
+      return setMessage({ text: "Please enter the complete 6-digit verification code.", type: "error" });
+    }
+
     setLoading(true);
     setMessage({ text: "Verifying one-time code and securing password with bcrypt...", type: "info" });
 
@@ -66,7 +69,7 @@ export default function ForgotPasswordPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           login: login.trim(),
-          token: token.trim(),
+          token: cleanToken,
           newPassword
         })
       });
@@ -120,8 +123,8 @@ export default function ForgotPasswordPage() {
 
           <p className="muted" style={{ fontSize: "0.9rem", marginBottom: 20 }}>
             {step === 1
-              ? "Enter your registered 10-digit mobile number or email address. We will generate a secure 15-minute one-time recovery code."
-              : "Enter the single-use code sent to your account along with your new password."}
+              ? "Enter your registered 10-digit mobile number or email address. We will generate a secure 15-minute one-time recovery code and send it to your email."
+              : "Enter the 6-digit verification code sent to your registered email along with your new password. (Check your Spam/Junk folder if not in Inbox)."}
           </p>
 
           {step === 1 ? (

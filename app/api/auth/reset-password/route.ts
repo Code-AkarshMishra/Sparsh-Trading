@@ -34,7 +34,12 @@ export async function POST(request: Request) {
     const raw = await request.json();
     const body = schema.parse(raw);
 
-    const tokenHash = crypto.createHash("sha256").update(body.token.trim()).digest("hex");
+    const cleanToken = body.token.replace(/\D/g, "");
+    if (cleanToken.length !== 6) {
+      return fail("Verification code must be exactly 6 digits.", 400);
+    }
+
+    const tokenHash = crypto.createHash("sha256").update(cleanToken).digest("hex");
     const newPasswordHash = await bcrypt.hash(body.newPassword, 10);
 
     let resetSucceeded = false;
@@ -52,11 +57,13 @@ export async function POST(request: Request) {
           const isMatch = user.resetTokenHash === tokenHash;
 
           if (!isExpired && isMatch) {
-            user.passwordHash = newPasswordHash;
-            // Immediate one-time single-use invalidation
-            user.resetTokenHash = undefined;
-            user.resetTokenExpiresAt = undefined;
-            await user.save();
+            await User.updateOne(
+              { _id: user._id },
+              {
+                $set: { passwordHash: newPasswordHash },
+                $unset: { resetTokenHash: 1, resetTokenExpiresAt: 1 }
+              }
+            );
             resetSucceeded = true;
             updatedUserId = String(user._id);
 
@@ -74,13 +81,22 @@ export async function POST(request: Request) {
     }
 
     // Fallback store reset execution
-    const offlineSuccess = fallbackStore.updatePasswordWithToken(body.login, tokenHash, newPasswordHash);
-    if (offlineSuccess) {
+    const offlineResult = fallbackStore.updatePasswordWithToken(body.login, tokenHash, newPasswordHash);
+    if (offlineResult.success) {
       resetSucceeded = true;
     }
 
     if (!resetSucceeded) {
-      return fail("Invalid, expired, or already-used reset token. Please request a new one.", 400);
+      if (offlineResult.reason === "TOKEN_MISMATCH") {
+        return fail("The 6-digit verification code is incorrect. If you requested multiple codes, please enter the latest code received in your email.", 400);
+      }
+      if (offlineResult.reason === "TOKEN_EXPIRED") {
+        return fail("This verification code has expired (15-minute time limit). Please request a new code.", 400);
+      }
+      if (offlineResult.reason === "NO_ACTIVE_TOKEN") {
+        return fail("This verification code has already been used or no active reset request exists. Please request a new code.", 400);
+      }
+      return fail("Invalid or expired reset token. Please request a new code.", 400);
     }
 
     return ok({

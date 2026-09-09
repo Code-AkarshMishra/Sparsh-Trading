@@ -10,7 +10,7 @@ import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 const schema = z.object({
   name: z.string().min(2).max(100).trim(),
   phone: z.string().min(10).max(15).regex(/^[0-9+ -]+$/, "Invalid phone number format"),
-  email: z.string().email().max(100).optional().or(z.literal("")),
+  email: z.string().email("Please enter a valid email address").max(100).trim().toLowerCase(),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters long")
@@ -33,14 +33,14 @@ export async function POST(request: Request) {
     }
 
     const body = schema.parse(await request.json());
-    const email = body.email ? body.email.toLowerCase().trim() : undefined;
+    const email = body.email.toLowerCase().trim();
     const passwordHash = await hashPassword(body.password);
 
     const db = await connectDB();
 
     if (db) {
       try {
-        const exists = await User.findOne({ $or: [{ phone: body.phone }, ...(email ? [{ email }] : [])] });
+        const exists = await User.findOne({ $or: [{ phone: body.phone }, { email }] });
         if (exists) return fail("A customer with this phone or email already exists.", 409);
         const user = await User.create({ ...body, email, passwordHash, role: "CUSTOMER" });
         await ActivityLog.create({ user: user._id, action: "CUSTOMER_REGISTERED", entity: "User", entityId: String(user._id) }).catch(() => null);
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     }
 
     // Offline / Local storage fallback
-    const existsOffline = fallbackStore.findUserByLogin(body.phone) || (email ? fallbackStore.findUserByLogin(email) : null);
+    const existsOffline = fallbackStore.findUserByLogin(body.phone) || fallbackStore.findUserByLogin(email);
     if (existsOffline) return fail("A customer with this phone or email already exists.", 409);
 
     const newUser = fallbackStore.createUser({

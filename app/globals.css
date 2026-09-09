@@ -1593,6 +1593,85 @@ a.card:active,
   font-size: 0.88rem;
 }
 
+/* Social & Directory Link Components */
+.social-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.social-icon-btn:hover {
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+.social-icon-btn.social-fb:hover {
+  background: #1877F2;
+  border-color: #1877F2;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.35);
+}
+
+.social-icon-btn.social-ig:hover {
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+  border-color: #d6249f;
+  box-shadow: 0 4px 12px rgba(214, 36, 159, 0.35);
+}
+
+.social-icon-btn.social-li:hover {
+  background: #0A66C2;
+  border-color: #0A66C2;
+  box-shadow: 0 4px 12px rgba(10, 102, 194, 0.35);
+}
+
+.social-icon-btn.social-wa:hover {
+  background: #25D366;
+  border-color: #25D366;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+}
+
+.directory-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.directory-badge-pill:hover {
+  transform: translateY(-2px);
+  border-color: var(--red-2);
+  color: var(--strong);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.directory-badge-pill.jd:hover {
+  border-color: #FF7700;
+  box-shadow: 0 4px 14px rgba(255, 119, 0, 0.25);
+}
+
+.directory-badge-pill.im:hover {
+  border-color: #2E3192;
+  box-shadow: 0 4px 14px rgba(46, 49, 146, 0.25);
+}
+
 /* =========================================================
    FLOATING ACTIONS & MOBILE BAR
    ========================================================= */

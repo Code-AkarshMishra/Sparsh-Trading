@@ -15,7 +15,15 @@ export const business = {
   serviceArea: "Pratapgarh, Allahabad, Sultanpur & Uttar Pradesh",
   tagline: "Built Strong.\nDesigned to Last.",
   description:
-    "Architectural metal fabrication, premium uPVC window systems, toughened glass railings, PPGI frames, and bespoke modular kitchens in Pratapgarh."
+    "Architectural metal fabrication, premium uPVC window systems, toughened glass railings, PPGI frames, and bespoke modular kitchens in Pratapgarh.",
+  socials: {
+    facebook: "https://www.facebook.com/sparshmetal/",
+    instagram: "https://www.instagram.com/sparsh_metal_industries/",
+    linkedin: "https://www.linkedin.com/in/aniket-mishra-0065a3242?originalSubdomain=in",
+    indiamart: "https://www.indiamart.com/sparsh-trading-pratapgarh/?srsltid=AfmBOoqc2BUb8lqzqisaDB3O42j01sdRbCNbk8KLr5TNJy7kCLndEU73",
+    justdial: "https://www.justdial.com/Pratapgarh-Uttar-Pradesh/Sparsh-Trading-Near-Meera-Bhavan-Chauraha-Ashtbhuja-Nagar/9999P5342-5342-250430121607-U3J4_BZDET",
+    justdialPhotos: "https://www.justdial.com/Pratapgarh-Uttar-Pradesh/Sparsh-Trading-Near-Meera-Bhavan-Chauraha-Ashtbhuja-Nagar/9999P5342-5342-250430121607-U3J4_BZDET/photos"
+  }
 };
 
 

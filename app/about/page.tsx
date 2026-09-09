@@ -2,6 +2,14 @@ import Link from "next/link";
 import { business } from "@/lib/business";
 import { OwnerMessage } from "@/components/OwnerMessage";
 import { BrandImage } from "@/components/BrandImage";
+import {
+  IndiaMartIcon,
+  JustdialIcon,
+  PhotosIcon,
+  InstagramIcon,
+  FacebookIcon,
+  LinkedInIcon
+} from "@/components/Icons";
 
 export default function AboutPage() {
   const sections = [
@@ -84,6 +92,76 @@ export default function AboutPage() {
             <Link className="btn" href="/gallery">
               View Site Photos &amp; Videos
             </Link>
+          </div>
+
+          <div style={{ marginTop: 28, paddingTop: 20, borderTop: "1px dashed var(--border)" }}>
+            <span style={{ fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--strong)", display: "block", marginBottom: 10 }}>
+              Verified Business Profiles &amp; Social Channels:
+            </span>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+              <a
+                href={business.socials.indiamart}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="directory-badge-pill im"
+                title="IndiaMART Verified Supplier Profile"
+              >
+                <IndiaMartIcon width={18} height={18} />
+                <span>IndiaMART Verified</span>
+              </a>
+              <a
+                href={business.socials.justdial}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="directory-badge-pill jd"
+                title="Justdial 5-Star Rated Business"
+              >
+                <JustdialIcon width={18} height={18} />
+                <span>Justdial Listing</span>
+              </a>
+              <a
+                href={business.socials.justdialPhotos}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="directory-badge-pill"
+                title="Justdial Site Fabrication Photos"
+              >
+                <PhotosIcon width={16} height={16} />
+                <span>Workshop Photos (JD)</span>
+              </a>
+              <div style={{ display: "flex", gap: 8, alignItems: "center", marginLeft: 4 }}>
+                <a
+                  href={business.socials.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-icon-btn social-ig"
+                  title="Follow on Instagram (@sparsh_metal_industries)"
+                  aria-label="Instagram"
+                >
+                  <InstagramIcon width={18} height={18} />
+                </a>
+                <a
+                  href={business.socials.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-icon-btn social-fb"
+                  title="Follow on Facebook (@sparshmetal)"
+                  aria-label="Facebook"
+                >
+                  <FacebookIcon width={18} height={18} />
+                </a>
+                <a
+                  href={business.socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-icon-btn social-li"
+                  title="Connect on LinkedIn (Aniket Mishra)"
+                  aria-label="LinkedIn"
+                >
+                  <LinkedInIcon width={18} height={18} />
+                </a>
+              </div>
+            </div>
           </div>
         </section>
       </div>

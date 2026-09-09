@@ -4,7 +4,7 @@ import { detailedProducts, getProductBySlug } from "../lib/productsCatalogueData
 import { locationsDatabase, getLocationBySlug } from "../lib/locationsData.ts";
 import { detailedProjectsData, getProjectBySlug } from "../lib/projectsDetailedData.ts";
 import { guidesData, getGuideBySlug } from "../lib/guidesData.ts";
-import { services } from "../lib/business.ts";
+import { services, business } from "../lib/business.ts";
 
 function generateTestSitemap() {
   const base = "https://sparshtrading.shop";
@@ -168,4 +168,14 @@ test("WebP Image Asset Optimization & Master Preservation Verification", async (
   const masterWordmark = path.resolve("public", "brand-wordmark.png");
   assert.ok(fs.existsSync(webpWordmark), "brand-wordmark.webp exists");
   assert.ok(fs.existsSync(masterWordmark), "Master brand-wordmark.png is preserved");
+});
+
+test("Verified Business Profiles & Social Links Integrity", () => {
+  assert.ok(business.socials, "business.socials object must exist");
+  assert.ok(business.socials.facebook.startsWith("https://www.facebook.com/sparshmetal"), "Facebook link is correct");
+  assert.ok(business.socials.instagram.startsWith("https://www.instagram.com/sparsh_metal_industries"), "Instagram link is correct");
+  assert.ok(business.socials.linkedin.startsWith("https://www.linkedin.com/in/aniket-mishra"), "LinkedIn link is correct");
+  assert.ok(business.socials.indiamart.startsWith("https://www.indiamart.com/sparsh-trading-pratapgarh"), "IndiaMART link is correct");
+  assert.ok(business.socials.justdial.startsWith("https://www.justdial.com/Pratapgarh-Uttar-Pradesh/Sparsh-Trading"), "Justdial listing link is correct");
+  assert.ok(business.socials.justdialPhotos.startsWith("https://www.justdial.com/Pratapgarh-Uttar-Pradesh/Sparsh-Trading") && business.socials.justdialPhotos.endsWith("/photos"), "Justdial photos link is correct");
 });

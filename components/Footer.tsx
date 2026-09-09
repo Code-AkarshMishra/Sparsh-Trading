@@ -4,14 +4,23 @@ import { BrandImage } from "@/components/BrandImage";
 import { detailedProducts } from "@/lib/productsCatalogueData";
 import { locationsDatabase } from "@/lib/locationsData";
 import { guidesData } from "@/lib/guidesData";
-import { WhatsAppIcon, PhoneIcon } from "@/components/Icons";
+import {
+  WhatsAppIcon,
+  FacebookIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  IndiaMartIcon,
+  JustdialIcon,
+  PhotosIcon,
+  ExternalLinkIcon
+} from "@/components/Icons";
 
 export function Footer() {
   return (
     <footer className="footer" role="contentinfo">
       <div className="wrap footer-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 28 }}>
         {/* Brand Column */}
-        <div className="footer-brand" style={{ gridColumn: "1 / -1", maxWidth: 680 }}>
+        <div className="footer-brand" style={{ gridColumn: "1 / -1", maxWidth: 760 }}>
           <Link href="/" className="logo" aria-label="SPARSH TRADING home">
             <span className="logo-mark">
               <BrandImage src="/brand-logo.png" alt={`${business.name} logo`} />
@@ -33,6 +42,102 @@ export function Footer() {
             <span style={{ fontSize: "0.76rem", background: "var(--surface-2)", color: "var(--text)", border: "1px solid var(--border)", padding: "4px 10px", borderRadius: 16, fontWeight: 600 }}>
               100% Tax Compliant GST Invoicing
             </span>
+          </div>
+
+          {/* Verified Trade Listings & Social Channels */}
+          <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px dashed var(--border)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+              {/* Verified Portals */}
+              <div>
+                <span style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--strong)", display: "block", marginBottom: 8 }}>
+                  Verified Trade Portals &amp; Listings
+                </span>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                  <a
+                    href={business.socials.indiamart}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="directory-badge-pill im"
+                    title="Sparsh Trading verified supplier catalog on IndiaMART"
+                    aria-label="IndiaMART Verified Supplier Profile"
+                  >
+                    <IndiaMartIcon width={18} height={18} />
+                    <span>IndiaMART Verified</span>
+                  </a>
+                  <a
+                    href={business.socials.justdial}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="directory-badge-pill jd"
+                    title="Sparsh Trading rated & verified business profile on Justdial"
+                    aria-label="Justdial Rated Business Profile"
+                  >
+                    <JustdialIcon width={18} height={18} />
+                    <span>Justdial Listing</span>
+                  </a>
+                  <a
+                    href={business.socials.justdialPhotos}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="directory-badge-pill"
+                    title="Real workshop and site fabrication photos on Justdial"
+                    aria-label="Justdial Real Site & Workshop Photos"
+                  >
+                    <PhotosIcon width={16} height={16} />
+                    <span>JD Site Photos</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Social Media Channels */}
+              <div>
+                <span style={{ fontSize: "0.76rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--strong)", display: "block", marginBottom: 8 }}>
+                  Official Social Channels
+                </span>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <a
+                    href={business.socials.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-icon-btn social-ig"
+                    title="Follow Sparsh Metal on Instagram (@sparsh_metal_industries)"
+                    aria-label="Sparsh Metal on Instagram"
+                  >
+                    <InstagramIcon width={18} height={18} />
+                  </a>
+                  <a
+                    href={business.socials.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-icon-btn social-fb"
+                    title="Follow Sparsh Metal on Facebook (@sparshmetal)"
+                    aria-label="Sparsh Metal on Facebook"
+                  >
+                    <FacebookIcon width={18} height={18} />
+                  </a>
+                  <a
+                    href={business.socials.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-icon-btn social-li"
+                    title="Connect with Aniket Mishra on LinkedIn"
+                    aria-label="Aniket Mishra on LinkedIn"
+                  >
+                    <LinkedInIcon width={18} height={18} />
+                  </a>
+                  <a
+                    href={`https://wa.me/${business.whatsapp}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-icon-btn social-wa"
+                    title="Instant WhatsApp Consultation (+91 8795662161)"
+                    aria-label="Instant WhatsApp Consultation"
+                  >
+                    <WhatsAppIcon width={18} height={18} />
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -80,6 +185,30 @@ export function Footer() {
             <li><Link href="/guides" style={{ color: "var(--red-2)", fontWeight: 600 }}>All Buying Guides →</Link></li>
             <li><Link href="/projects">Case Studies Portfolio</Link></li>
             <li><Link href="/gallery">Photos &amp; Videos</Link></li>
+            <li>
+              <a
+                href={business.socials.justdialPhotos}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
+                title="Browse real workshop photos on Justdial"
+              >
+                <span>Justdial Photos Gallery</span>
+                <ExternalLinkIcon width={11} height={11} />
+              </a>
+            </li>
+            <li>
+              <a
+                href={business.socials.indiamart}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
+                title="View verified supplier catalogue on IndiaMART"
+              >
+                <span>IndiaMART Catalogue</span>
+                <ExternalLinkIcon width={11} height={11} />
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -113,6 +242,28 @@ export function Footer() {
             <p style={{ fontSize: "0.8rem", marginTop: 8, color: "var(--text)" }}>
               <strong style={{ color: "var(--strong)" }}>GSTIN:</strong> <span style={{ color: "var(--red-2)", fontWeight: 700 }}>{business.gstin}</span>
             </p>
+            <div style={{ marginTop: 14, paddingTop: 10, borderTop: "1px solid var(--border)" }}>
+              <span className="muted" style={{ display: "block", fontSize: "0.76rem", marginBottom: 6 }}>
+                Connect on Social &amp; Trade Portals:
+              </span>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                <a href={business.socials.instagram} target="_blank" rel="noopener noreferrer" className="social-icon-btn social-ig" title="Instagram" aria-label="Instagram" style={{ width: 30, height: 30 }}>
+                  <InstagramIcon width={15} height={15} />
+                </a>
+                <a href={business.socials.facebook} target="_blank" rel="noopener noreferrer" className="social-icon-btn social-fb" title="Facebook" aria-label="Facebook" style={{ width: 30, height: 30 }}>
+                  <FacebookIcon width={15} height={15} />
+                </a>
+                <a href={business.socials.linkedin} target="_blank" rel="noopener noreferrer" className="social-icon-btn social-li" title="LinkedIn" aria-label="LinkedIn" style={{ width: 30, height: 30 }}>
+                  <LinkedInIcon width={15} height={15} />
+                </a>
+                <a href={business.socials.indiamart} target="_blank" rel="noopener noreferrer" className="social-icon-btn" title="IndiaMART" aria-label="IndiaMART" style={{ width: 30, height: 30, padding: 0 }}>
+                  <IndiaMartIcon width={18} height={18} />
+                </a>
+                <a href={business.socials.justdial} target="_blank" rel="noopener noreferrer" className="social-icon-btn" title="Justdial" aria-label="Justdial" style={{ width: 30, height: 30, padding: 0 }}>
+                  <JustdialIcon width={18} height={18} />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
